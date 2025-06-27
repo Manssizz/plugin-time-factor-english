@@ -1,0 +1,73 @@
+apiVersion: v1alpha1
+kind: Setting
+metadata:
+  name: plugin-timeFactor-settings
+spec:
+  forms:
+    - group: basic
+      label: 基本设置
+      formSchema:
+        - $el: a
+          attrs:
+            href: "https://docs.lik.cc"
+            class: "py-4 block"
+            target: "_blank"
+            style:
+              color: "#1890ff"
+              fontSize: "0.875em"
+              display: "flex"
+              align-items: "center"
+          children:
+            - $el: span
+              children: "查看 Ink SEO助手 帮助文档"
+            - $el: img
+              attrs:
+                src: "/plugins/time-factor/assets/static/img/link.svg"
+                width: "14px"
+                height: "14px"
+                style:
+                  margin-left: "4px"
+        - $el: span
+          children: "Halo交流群"
+        - $el: img
+          attrs:
+            src: "https://www.lik.cc/upload/iShot_2025-03-03_16.03.00.png"
+            width: "100px"
+            height: "120px"
+            style:
+              margin-left: "80px"
+        - $formkit: checkbox
+          label: 启用百度时间因子
+          name: enableBaiduTimeFactor
+          id: enableBaiduTimeFactor
+          key: enableBaiduTimeFactor
+          value: true
+          help: "百度搜索引擎系列时间因子"
+        - $formkit: checkbox
+          label: 启用OG时间因子
+          name: enableOGTimeFactor
+          id: enableOGTimeFactor
+          key: enableOGTimeFactor
+          value: true
+          help: "主流搜索引擎系列时间因子"
+        - $formkit: checkbox
+          label: 启用Meta时间因子
+          name: enableMetaTimeFactor
+          id: enableMetaTimeFactor
+          key: enableMetaTimeFactor
+          value: true
+          help: "头条等搜索引擎系列时间因子"
+        - $formkit: checkbox
+          label: 启用结构化数据
+          name: enableStructuredData
+          id: enableStructuredData
+          key: enableStructuredData
+          value: true
+          help: "谷歌、Bing等搜索引擎获取内容信息的方式"
+        - $formkit: checkbox
+          label: 是否只给搜索引擎查看
+          name: enableSearchEngine
+          id: enableSearchEngine
+          key: enableSearchEngine
+          value: false
+          help: "谷歌、Bing等搜索引擎获取内容信息的方式"
