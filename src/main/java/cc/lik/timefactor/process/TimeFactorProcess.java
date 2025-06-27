@@ -17,16 +17,34 @@ import run.halo.app.extension.ReactiveExtensionClient;
 import run.halo.app.extension.index.query.QueryFactory;
 import run.halo.app.extension.router.selector.FieldSelector;
 import run.halo.app.infra.ExternalLinkProcessor;
+import run.halo.app.infra.SystemInfo;
 import run.halo.app.infra.SystemInfoGetter;
 import run.halo.app.theme.dialect.TemplateHeadProcessor;
+
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class TimeFactorProcess implements TemplateHeadProcessor {
     private static final DateTimeFormatter BAIDU_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     private static final DateTimeFormatter GOOGLE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+
+    private record SeoData(
+        String title,
+        String description,
+        String coverUrl,
+        String postUrl,
+        String author,
+        String baiduPubDate,
+        String baiduUpdDate,
+        String googlePubDate,
+        String googleUpdDate,
+        String siteName,
+        String siteLogo,
+        String keywords
+    ) {}
 
     private final ReactiveExtensionClient client;
     private final SettingConfigGetter settingConfigGetter;
@@ -35,60 +53,95 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
 
     @Override
     public Mono<Void> process(ITemplateContext context, IModel model, IElementModelStructureHandler handler) {
-        final IModelFactory modelFactory = context.getModelFactory();
-        var name = context.getVariable("name") == null ? null : context.getVariable("name").toString();
-        if (name == null || name.isEmpty()) return Mono.empty();
+        var modelFactory = context.getModelFactory();
+        var postName = Optional.ofNullable(context.getVariable("name"))
+            .map(Object::toString)
+            .filter(name -> !name.isEmpty())
+            .orElse(null);
+            
+        if (postName == null) {
+            return Mono.empty();
+        }
 
-        return client.fetch(Post.class, name)
-            .flatMap(post -> Mono.zip(
-                client.fetch(User.class, post.getSpec().getOwner()),
-                findTag(post),
-                settingConfigGetter.getBasicConfig(),
-                systemInfoGetter.get()
-            ).flatMap(tuple -> {
-                var user = tuple.getT1();
-                var keywords = tuple.getT2();
-                var config = tuple.getT3();
-                var systemInfo = tuple.getT4();
-                var author =
-                    user.getSpec() != null ? user.getSpec().getDisplayName() : post.getSpec().getOwner();
-                var postUrl = externalLinkProcessor.processLink(post.getStatus().getPermalink());
-                var title = post.getSpec().getTitle();
-                var description = post.getSpec().getExcerpt().getRaw();
-                var coverUrl = externalLinkProcessor.processLink(
-                    post.getSpec().getCover() != null && !post.getSpec().getCover().isBlank() 
-                        ? post.getSpec().getCover() 
-                        : config.getDefaultImage()
-                );
-                var publishInstant = post.getSpec().getPublishTime();
-                var updateInstant = post.getStatus().getLastModifyTime();
-                var baiduPubDate = publishInstant != null ? publishInstant.atZone(ZoneId.systemDefault()).format(BAIDU_FORMATTER) : "";
-                var baiduUpdDate = updateInstant != null ? updateInstant.atZone(ZoneId.systemDefault()).format(BAIDU_FORMATTER) : "";
-                var googlePubDate = publishInstant != null ? publishInstant.atZone(ZoneId.systemDefault()).format(GOOGLE_FORMATTER) : "";
-                var googleUpdDate = updateInstant != null ? updateInstant.atZone(ZoneId.systemDefault()).format(GOOGLE_FORMATTER) : "";
-                var siteName = systemInfo.getTitle();
-                var siteLogo = externalLinkProcessor.processLink(systemInfo.getLogo());
-                var siteKeywords = systemInfo.getSeo() != null ? systemInfo.getSeo().getKeywords() : "";
-                // 优先用文章标签，否则用全局SEO keywords
-                var finalKeywords = !keywords.isBlank() ? keywords : siteKeywords;
+        return client.fetch(Post.class, postName)
+            .flatMap(post -> buildSeoData(post)
+                .flatMap(seoData -> generateSeoTags(seoData, model, modelFactory)));
+    }
+
+    private Mono<SeoData> buildSeoData(Post post) {
+        return Mono.zip(
+            client.fetch(User.class, post.getSpec().getOwner()),
+            findTag(post),
+            settingConfigGetter.getBasicConfig(),
+            systemInfoGetter.get()
+        ).map(tuple -> {
+            var user = tuple.getT1();
+            var keywords = tuple.getT2();
+            var config = tuple.getT3();
+            var systemInfo = tuple.getT4();
+            
+            var author = Optional.of(user)
+                .map(User::getSpec)
+                .map(User.UserSpec::getDisplayName)
+                .orElse(post.getSpec().getOwner());
+                
+            var postUrl = externalLinkProcessor.processLink(post.getStatus().getPermalink());
+            var title = post.getSpec().getTitle();
+            var description = post.getSpec().getExcerpt().getRaw();
+            var coverUrl = externalLinkProcessor.processLink(
+                Optional.ofNullable(post.getSpec().getCover())
+                    .filter(cover -> !cover.isBlank())
+                    .orElse(config.getDefaultImage())
+            );
+            
+            var publishInstant = post.getSpec().getPublishTime();
+            var updateInstant = post.getStatus().getLastModifyTime();
+            var zoneId = ZoneId.systemDefault();
+            
+            var baiduPubDate = formatDateTime(publishInstant, BAIDU_FORMATTER, zoneId);
+            var baiduUpdDate = formatDateTime(updateInstant, BAIDU_FORMATTER, zoneId);
+            var googlePubDate = formatDateTime(publishInstant, GOOGLE_FORMATTER, zoneId);
+            var googleUpdDate = formatDateTime(updateInstant, GOOGLE_FORMATTER, zoneId);
+            
+            var siteName = systemInfo.getTitle();
+            var siteLogo = externalLinkProcessor.processLink(systemInfo.getLogo());
+            var siteKeywords = Optional.ofNullable(systemInfo.getSeo())
+                .map(SystemInfo.SeoProp::getKeywords)
+                .orElse("");
+            
+            var finalKeywords = keywords.isBlank() ? siteKeywords : keywords;
+            
+            return new SeoData(
+                title, description, coverUrl, postUrl, author,
+                baiduPubDate, baiduUpdDate, googlePubDate, googleUpdDate,
+                siteName, siteLogo, finalKeywords
+            );
+        });
+    }
+
+    private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
+        return settingConfigGetter.getBasicConfig()
+            .map(config -> {
                 var sb = new StringBuilder();
+                
+                // 使用if-else简化配置检查
                 if (config.isEnableOGTimeFactor()) {
-                    sb.append(genOGMeta(title, description, coverUrl, postUrl, baiduPubDate,
-                        baiduUpdDate, author));
+                    sb.append(genOGMeta(seoData));
                 }
                 if (config.isEnableMetaTimeFactor()) {
-                    sb.append(genBytedanceMeta(baiduPubDate, baiduUpdDate));
+                    sb.append(genBytedanceMeta(seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
                 if (config.isEnableBaiduTimeFactor()) {
-                    sb.append(genBaiduScript(title, postUrl, baiduPubDate, baiduUpdDate));
+                    sb.append(genBaiduScript(seoData.title(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
                 if (config.isEnableStructuredData()) {
-                    sb.append(genSchemaOrgScript(title, description, coverUrl, author, siteName, siteLogo,
-                        postUrl, googlePubDate, googleUpdDate, finalKeywords));
+                    sb.append(genSchemaOrgScript(seoData));
                 }
+                
                 model.add(modelFactory.createText(sb.toString()));
-                return Mono.empty();
-            }));
+                return Mono.<Void>empty();
+            })
+            .then();
     }
 
     private Mono<String> findTag(Post post) {
@@ -103,59 +156,59 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         ));
 
         return client.listAll(Tag.class, listOptions, Sort.by(Sort.Order.asc("metadata.name")))
-            .map(tag -> {
-                var displayName = tag.getSpec().getDisplayName();
-                return displayName != null ? displayName : tag.getMetadata().getName();
-            })
+            .map(tag -> Optional.ofNullable(tag.getSpec().getDisplayName())
+                .orElse(tag.getMetadata().getName()))
             .collectList()
             .map(list -> String.join(",", list))
             .onErrorReturn("")
             .defaultIfEmpty("");
     }
 
-    private String genOGMeta(String title, String description, String coverUrl, String url, String publishDate, String updateDate, String author) {
-        return String.format(
-            """
-                <meta property="og:type" content="article"/>
-                <meta property="og:title" content="%s"/>
-                <meta property="og:description" content="%s"/>
-                <meta property="og:image" content="%s"/>
-                <meta property="og:url" content="%s"/>
-                <meta property="og:release_date" content="%s"/>
-                <meta property="og:modified_time" content="%s"/>
-                <meta property="og:author" content="%s"/>
-                """,
-            title, description, coverUrl, url, publishDate, updateDate, author
-        );
+    private String formatDateTime(java.time.Instant instant, DateTimeFormatter formatter, ZoneId zoneId) {
+        return Optional.ofNullable(instant)
+            .map(inst -> inst.atZone(zoneId).format(formatter))
+            .orElse("");
+    }
+
+    private String genOGMeta(SeoData seoData) {
+        return """
+            <meta property="og:type" content="article"/>
+            <meta property="og:title" content="%s"/>
+            <meta property="og:description" content="%s"/>
+            <meta property="og:image" content="%s"/>
+            <meta property="og:url" content="%s"/>
+            <meta property="og:release_date" content="%s"/>
+            <meta property="og:modified_time" content="%s"/>
+            <meta property="og:author" content="%s"/>
+            """.formatted(
+                seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl(),
+                seoData.baiduPubDate(), seoData.baiduUpdDate(), seoData.author()
+            );
     }
 
     private String genBytedanceMeta(String publishDate, String updateDate) {
-        return String.format(
-            "<meta property=\"bytedance:published_time\" content=\"%s\"/>" +
-            "<meta property=\"bytedance:updated_time\" content=\"%s\"/>",
-            publishDate, updateDate
-        );
+        return """
+            <meta property="bytedance:published_time" content="%s"/>
+            <meta property="bytedance:updated_time" content="%s"/>
+            """.formatted(publishDate, updateDate);
     }
 
     private String genBaiduScript(String title, String url, String publishDate, String updateDate) {
-        return String.format(
-            """
-                <script type="application/ld+json">\
-                {
-                  "@context": "https://ziyuan.baidu.com/contexts/cambrian.jsonld",
-                  "@id": "%s",
-                  "title": "%s",
-                  "pubDate": "%s",
-                  "upDate": "%s"
-                }\
-                </script>""",
-            url, title, publishDate, updateDate
-        );
+        return """
+            <script type="application/ld+json">
+            {
+              "@context": "https://ziyuan.baidu.com/contexts/cambrian.jsonld",
+              "@id": "%s",
+              "title": "%s",
+              "pubDate": "%s",
+              "upDate": "%s"
+            }
+            </script>
+            """.formatted(url, title, publishDate, updateDate);
     }
 
-    private String genSchemaOrgScript(String title, String description, String coverUrl, String author, String siteName, String siteLogo, String url, String publishDate, String updateDate, String keywords) {
-        return String.format(
-            """
+    private String genSchemaOrgScript(SeoData seoData) {
+        return """
             <script type="application/ld+json">
             {
               "@context": "https://schema.org",
@@ -185,8 +238,11 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
               "keywords": "%s"
             }
             </script>
-            """,
-            url, title, description, publishDate, updateDate, author, siteName, siteLogo, coverUrl, url, keywords
-        );
+            """.formatted(
+                seoData.postUrl(), seoData.title(), seoData.description(),
+                seoData.googlePubDate(), seoData.googleUpdDate(), seoData.author(),
+                seoData.siteName(), seoData.siteLogo(), seoData.coverUrl(),
+                seoData.postUrl(), seoData.keywords()
+            );
     }
 }
