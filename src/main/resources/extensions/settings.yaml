@@ -70,4 +70,10 @@ spec:
           id: enableSearchEngine
           key: enableSearchEngine
           value: false
-          help: "谷歌、Bing等搜索引擎获取内容信息的方式"
+          help: "开启后只有检查器和搜索引擎可以查看时间因子，其他用户无法查看"
+        - $formkit: attachment
+          label: 默认封面图
+          name: defaultImage
+          id: defaultImage
+          key: defaultImage
+          help: "当没有设置封面图时使用"
