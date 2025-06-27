@@ -64,13 +64,6 @@ spec:
           key: enableStructuredData
           value: true
           help: "谷歌、Bing等搜索引擎获取内容信息的方式"
-        - $formkit: checkbox
-          label: 是否只给搜索引擎查看
-          name: enableSearchEngine
-          id: enableSearchEngine
-          key: enableSearchEngine
-          value: false
-          help: "开启后只有检查器和搜索引擎可以查看时间因子，其他用户无法查看"
         - $formkit: attachment
           label: 默认封面图
           name: defaultImage

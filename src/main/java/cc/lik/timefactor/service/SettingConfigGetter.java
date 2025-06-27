@@ -13,7 +13,6 @@ public interface SettingConfigGetter {
         private boolean enableOGTimeFactor;
         private boolean enableMetaTimeFactor;
         private boolean enableStructuredData;
-        private boolean enableSearchEngine;
         private String defaultImage;
     }
 }
