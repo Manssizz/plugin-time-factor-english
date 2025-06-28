@@ -13,9 +13,9 @@ jobs:
     permissions:
       contents: write
     with:
-#      app-id:
+      app-id: app-jxnpjntq
       node-version: 22
       pnpm-version: 9
       java-version: 21
       ui-path: ui
-      skip-appstore-release: true
+      # skip-appstore-release: true
