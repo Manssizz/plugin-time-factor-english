@@ -15,7 +15,7 @@ spec:
   homepage: https://github.com/Handsome/time-factor#readme
   repo: https://github.com/Handsome/time-factor
   issues: https://github.com/Handsome/time-factor/issues
-  displayName: "SEO助手"
+  displayName: "时间因子SEO"
   description: "聚合百度、Google、字节等主流平台时间因子和元标签的全能 SEO 插件!"
   settingName: plugin-timeFactor-settings
   configMapName: plugin-timeFactor-configMap
