@@ -1,6 +1,6 @@
-# Time Factor - Halo SEO 插件
+# 时间因子SEO 插件
 
-Time Factor 是一个专为 Halo 博客系统设计的 SEO 优化插件，通过动态注入结构化数据（meta/script 标签）来提升站点在各大搜索引擎的收录与排名表现。
+时间因子SEO 是一个专为 Halo 博客系统设计的 SEO 优化插件，通过动态注入结构化数据（meta/script 标签）来提升站点在各大搜索引擎的收录与排名表现。
 
 ## 🌐 演示与交流
 
