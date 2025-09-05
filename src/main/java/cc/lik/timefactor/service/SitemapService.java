@@ -93,24 +93,28 @@ public class SitemapService {
             return Mono.just("");
         }
 
-        return client.listAll(Category.class, null, null)
-            .map(category -> {
-                var categoryUrl = externalLinkProcessor.processLink("/categories/" + category.getMetadata().getName());
-                var lastMod = formatLastMod(category.getMetadata().getCreationTimestamp());
-                var priority = "0.3"; // Lower priority for categories
-                var changefreq = "weekly";
+        return systemInfoGetter.get()
+            .flatMap(systemInfo -> {
+                var baseUrl = systemInfo.getUrl().toString();
+                return client.listAll(Category.class, null, null)
+                    .map(category -> {
+                        var categoryUrl = externalLinkProcessor.processLink(baseUrl + "/categories/" + category.getMetadata().getName());
+                        var lastMod = formatLastMod(category.getMetadata().getCreationTimestamp());
+                        var priority = "0.3"; // Lower priority for categories
+                        var changefreq = "weekly";
 
-                return """
-                    <url>
-                      <loc>%s</loc>
-                      <lastmod>%s</lastmod>
-                      <changefreq>%s</changefreq>
-                      <priority>%s</priority>
-                    </url>
-                    """.formatted(categoryUrl, lastMod, changefreq, priority);
+                        return """
+                            <url>
+                              <loc>%s</loc>
+                              <lastmod>%s</lastmod>
+                              <changefreq>%s</changefreq>
+                              <priority>%s</priority>
+                            </url>
+                            """.formatted(categoryUrl, lastMod, changefreq, priority);
+                    })
+                    .collectList()
+                    .map(urls -> String.join("", urls));
             })
-            .collectList()
-            .map(urls -> String.join("", urls))
             .defaultIfEmpty("");
     }
 
@@ -119,24 +123,28 @@ public class SitemapService {
             return Mono.just("");
         }
 
-        return client.listAll(Tag.class, null, null)
-            .map(tag -> {
-                var tagUrl = externalLinkProcessor.processLink("/tags/" + tag.getMetadata().getName());
-                var lastMod = formatLastMod(tag.getMetadata().getCreationTimestamp());
-                var priority = "0.3"; // Lower priority for tags
-                var changefreq = "weekly";
+        return systemInfoGetter.get()
+            .flatMap(systemInfo -> {
+                var baseUrl = systemInfo.getUrl().toString();
+                return client.listAll(Tag.class, null, null)
+                    .map(tag -> {
+                        var tagUrl = externalLinkProcessor.processLink(baseUrl + "/tags/" + tag.getMetadata().getName());
+                        var lastMod = formatLastMod(tag.getMetadata().getCreationTimestamp());
+                        var priority = "0.3"; // Lower priority for tags
+                        var changefreq = "weekly";
 
-                return """
-                    <url>
-                      <loc>%s</loc>
-                      <lastmod>%s</lastmod>
-                      <changefreq>%s</changefreq>
-                      <priority>%s</priority>
-                    </url>
-                    """.formatted(tagUrl, lastMod, changefreq, priority);
+                        return """
+                            <url>
+                              <loc>%s</loc>
+                              <lastmod>%s</lastmod>
+                              <changefreq>%s</changefreq>
+                              <priority>%s</priority>
+                            </url>
+                            """.formatted(tagUrl, lastMod, changefreq, priority);
+                    })
+                    .collectList()
+                    .map(urls -> String.join("", urls));
             })
-            .collectList()
-            .map(urls -> String.join("", urls))
             .defaultIfEmpty("");
     }
 
