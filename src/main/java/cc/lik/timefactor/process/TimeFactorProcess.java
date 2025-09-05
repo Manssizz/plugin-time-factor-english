@@ -51,6 +51,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     private final SettingConfigGetter settingConfigGetter;
     private final ExternalLinkProcessor externalLinkProcessor;
     private final SystemInfoGetter systemInfoGetter;
+    private final SocialMediaOptimizationService socialMediaOptimizationService;
 
     @Override
     public Mono<Void> process(ITemplateContext context, IModel model, IElementModelStructureHandler handler) {
@@ -121,19 +122,25 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     }
 
     private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
-        return settingConfigGetter.getBasicConfig()
-            .map(config -> {
+        var ogMono = socialMediaOptimizationService.generateOpenGraphTags(seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl());
+        var twitterMono = socialMediaOptimizationService.generateTwitterCardTags(seoData.title(), seoData.description(), seoData.coverUrl());
+
+        return Mono.zip(settingConfigGetter.getBasicConfig(), ogMono, twitterMono)
+            .map(tuple -> {
+                var config = tuple.getT1();
+                var ogTags = tuple.getT2();
+                var twitterTags = tuple.getT3();
+
                 var sb = new StringBuilder();
 
                 // Add canonical meta tag
                 sb.append("<link rel=\"canonical\" href=\"%s\" />\n".formatted(seoData.postUrl()));
 
-                // 使用if-else简化配置检查
                 if (config.isEnableOpenGraph()) {
-                    sb.append(genOGMeta(seoData));
+                    sb.append(ogTags);
                 }
                 if (config.isEnableTwitterCards()) {
-                    sb.append(genBytedanceMeta(seoData.baiduPubDate(), seoData.baiduUpdDate()));
+                    sb.append(twitterTags);
                 }
                 if (config.isEnableBaiduStructured()) {
                     sb.append(genBaiduScript(seoData.title(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate()));
@@ -143,7 +150,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 }
 
                 model.add(modelFactory.createText(sb.toString()));
-                return Mono.<Void>empty();
+                return (Void) null;
             })
             .then();
     }
@@ -174,28 +181,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             .orElse("");
     }
 
-    private String genOGMeta(SeoData seoData) {
-        return """
-            <meta property="og:type" content="article"/>
-            <meta property="og:title" content="%s"/>
-            <meta property="og:description" content="%s"/>
-            <meta property="og:image" content="%s"/>
-            <meta property="og:url" content="%s"/>
-            <meta property="og:release_date" content="%s"/>
-            <meta property="og:modified_time" content="%s"/>
-            <meta property="og:author" content="%s"/>
-            """.formatted(
-                seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl(),
-                seoData.baiduPubDate(), seoData.baiduUpdDate(), seoData.author()
-            );
-    }
 
-    private String genBytedanceMeta(String publishDate, String updateDate) {
-        return """
-            <meta property="bytedance:published_time" content="%s"/>
-            <meta property="bytedance:updated_time" content="%s"/>
-            """.formatted(publishDate, updateDate);
-    }
 
     private String genBaiduScript(String title, String url, String publishDate, String updateDate) {
         return """

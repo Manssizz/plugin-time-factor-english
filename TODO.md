@@ -1,4 +1,4 @@
-# SEO Toolset Plugin Implementation
+sk# SEO Toolset Plugin Implementation
 
 ## Completed Tasks
 - [x] Rename plugin from timefactor to seo-toolset
@@ -12,6 +12,7 @@
 - [x] Fix compilation errors and package imports
 - [x] Add GitHub Actions workflow with manual trigger support
 - [x] Update test class to use SeoToolsetPlugin and correct package structure
+- [x] Fix meta og and twitter tags to be visible in browser inspect element by using SocialMediaOptimizationService in TimeFactorProcess
 
 ## Pending Tasks
 - [ ] Create VerificationCodeService for search engine verification codes
