@@ -1,0 +1,83 @@
+name: Workflow Builder and Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build and upload'
+        required: false
+        default: 'latest'
+      upload_target:
+        description: 'Upload target (e.g., github, appstore)'
+        required: false
+        default: 'github'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Build UI
+        run: |
+          cd ui
+          pnpm install
+          pnpm build
+
+      - name: Build Plugin
+        run: ./gradlew build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-build-${{ github.run_number }}
+          path: |
+            build/libs/*.jar
+            ui/dist/**
+
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.upload_target == 'github'
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-build-${{ github.run_number }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version || github.run_number }}
+          release_name: Release ${{ github.event.inputs.version || github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUILD_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/libs/plugin-time-factor-*.jar
+          asset_name: plugin-time-factor-${{ github.event.inputs.version || github.run_number }}.jar
+          asset_content_type: application/java-archive

@@ -21,11 +21,11 @@ public class TimeFactorPlugin extends BasePlugin {
 
     @Override
     public void start() {
-        System.out.println("插件启动成功！");
+        System.out.println("Plugin started!");
     }
 
     @Override
     public void stop() {
-        System.out.println("插件停止！");
+        System.out.println("Plugin Stopped");
     }
 }

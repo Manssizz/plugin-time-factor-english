@@ -123,7 +123,10 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         return settingConfigGetter.getBasicConfig()
             .map(config -> {
                 var sb = new StringBuilder();
-                
+
+                // Add canonical meta tag
+                sb.append("<link rel=\"canonical\" href=\"%s\" />\n".formatted(seoData.postUrl()));
+
                 // 使用if-else简化配置检查
                 if (config.isEnableOGTimeFactor()) {
                     sb.append(genOGMeta(seoData));
@@ -137,7 +140,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 if (config.isEnableStructuredData()) {
                     sb.append(genSchemaOrgScript(seoData));
                 }
-                
+
                 model.add(modelFactory.createText(sb.toString()));
                 return Mono.<Void>empty();
             })

@@ -5,7 +5,7 @@ metadata:
 spec:
   forms:
     - group: basic
-      label: 基本设置
+      label: Basic
       formSchema:
         - $el: a
           attrs:
@@ -37,36 +37,36 @@ spec:
             style:
               margin-left: "80px"
         - $formkit: checkbox
-          label: 启用百度时间因子
+          label: "Baidu"
           name: enableBaiduTimeFactor
           id: enableBaiduTimeFactor
           key: enableBaiduTimeFactor
           value: true
-          help: "百度搜索引擎系列时间因子"
+          help: "Baidu search engine series time factor"
         - $formkit: checkbox
-          label: 启用OG时间因子
+          label: "OG Timer"
           name: enableOGTimeFactor
           id: enableOGTimeFactor
           key: enableOGTimeFactor
           value: true
-          help: "主流搜索引擎系列时间因子"
+          help: "Mainstream search engine series time factor"
         - $formkit: checkbox
-          label: 启用Meta时间因子
+          label: "Meta Timefactor"
           name: enableMetaTimeFactor
           id: enableMetaTimeFactor
           key: enableMetaTimeFactor
           value: true
-          help: "头条等搜索引擎系列时间因子"
+          help: "Meta time factor"
         - $formkit: checkbox
-          label: 启用结构化数据
+          label: "Struture Data"
           name: enableStructuredData
           id: enableStructuredData
           key: enableStructuredData
           value: true
-          help: "谷歌、Bing等搜索引擎获取内容信息的方式"
+          help: "How search engines like Google and Bing obtain content information"
         - $formkit: attachment
-          label: 默认封面图
+          label: Cover
           name: defaultImage
           id: defaultImage
           key: defaultImage
-          help: "当没有设置封面图时使用"
+          help: "Cover thumbnail"
