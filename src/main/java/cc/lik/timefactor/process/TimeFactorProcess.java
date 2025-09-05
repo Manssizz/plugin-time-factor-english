@@ -122,7 +122,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     }
 
     private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
-        var ogMono = socialMediaOptimizationService.generateOpenGraphTags(seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl());
+        var ogMono = socialMediaOptimizationService.generateOpenGraphTags(seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate(), seoData.author());
         var twitterMono = socialMediaOptimizationService.generateTwitterCardTags(seoData.title(), seoData.description(), seoData.coverUrl());
 
         return Mono.zip(settingConfigGetter.getBasicConfig(), ogMono, twitterMono)

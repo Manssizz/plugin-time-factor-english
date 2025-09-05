@@ -14,7 +14,7 @@ public class SocialMediaOptimizationService {
     /**
      * Generate OpenGraph meta tags.
      */
-    public Mono<String> generateOpenGraphTags(String title, String description, String imageUrl, String url) {
+    public Mono<String> generateOpenGraphTags(String title, String description, String imageUrl, String url, String releaseDate, String modifiedTime, String author) {
         return Mono.fromCallable(() -> {
             return String.format("""
                 <meta property="og:type" content="article"/>
@@ -22,7 +22,10 @@ public class SocialMediaOptimizationService {
                 <meta property="og:description" content="%s"/>
                 <meta property="og:image" content="%s"/>
                 <meta property="og:url" content="%s"/>
-                """, title, description, imageUrl, url);
+                <meta property="og:release_date" content="%s"/>
+                <meta property="og:modified_time" content="%s"/>
+                <meta property="og:author" content="%s"/>
+                """, title, description, imageUrl, url, releaseDate, modifiedTime, author);
         });
     }
 
