@@ -197,9 +197,19 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         }
 
         // Fallback: generate description from post content
-        return Optional.ofNullable(post.getSpec().getContent())
-            .map(content -> content.getRaw())
-            .map(this::extractSummaryFromContent)
+        // Note: In Halo, post content might not be directly accessible in PostSpec
+        // This is a placeholder for when content access is available
+        return Optional.ofNullable(post.getSpec())
+            .map(spec -> {
+                // Try to access content if available (this might need adjustment based on Halo API)
+                try {
+                    // For now, return a default description when excerpt is not available
+                    // TODO: Implement proper content access when Halo API allows it
+                    return "Article by " + post.getSpec().getOwner() + " - " + post.getSpec().getTitle();
+                } catch (Exception e) {
+                    return "";
+                }
+            })
             .orElse("");
     }
 
