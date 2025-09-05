@@ -1,7 +1,7 @@
 package cc.lik.timefactor.service.impl;
 
 
-import cc.lik.seotoolset.service.SettingConfigGetter;
+import cc.lik.timefactor.service.SettingConfigGetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;

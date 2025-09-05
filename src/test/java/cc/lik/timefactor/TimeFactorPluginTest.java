@@ -1,4 +1,4 @@
-package cc.lik.seotoolset;
+package cc.lik.timefactor;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,13 +8,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import run.halo.app.plugin.PluginContext;
 
 @ExtendWith(MockitoExtension.class)
-class SeoToolsetPluginTest {
+class TimeFactorPluginTest {
 
     @Mock
     PluginContext context;
 
     @InjectMocks
-    SeoToolsetPlugin plugin;
+    TimeFactorPlugin plugin;
 
     @Test
     void contextLoads() {

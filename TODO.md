@@ -1,24 +1,27 @@
-sk# SEO Toolset Plugin Implementation
+# TODO: Add Canonical and Twitter Meta Tags for Articles
 
 ## Completed Tasks
-- [x] Rename plugin from timefactor to seo-toolset
-- [x] Update plugin class name
-- [x] Update settings.yaml with new plugin name and comprehensive settings
-- [x] Create WebsiteInfoService for crawling status and robots.txt checks
-- [x] Create PageAnalysisService for SEO optimization analysis
-- [x] Create CrawlerLogService for request logging and anomaly detection
-- [x] Create SocialMediaOptimizationService for OpenGraph, Twitter, WeChat cards
-- [x] Update TimeFactorProcess configuration method calls to match new settings
-- [x] Fix compilation errors and package imports
-- [x] Add GitHub Actions workflow with manual trigger support
-- [x] Update test class to use SeoToolsetPlugin and correct package structure
-- [x] Fix meta og and twitter tags to be visible in browser inspect element by using SocialMediaOptimizationService in TimeFactorProcess
+- [x] Updated BasicConfig class to include enableCanonicalTag and enableTwitterCard flags
+- [x] Added checkboxes in settings.yaml for enabling canonical tags and Twitter cards
+- [x] Updated TimeFactorProcess.java to generate canonical and Twitter meta tags
+- [x] Added genCanonicalTag() method to generate canonical link tag
+- [x] Added genTwitterCard() method to generate Twitter Card meta tags
 
-## Pending Tasks
-- [ ] Create VerificationCodeService for search engine verification codes
-- [ ] Create StructuredDataService for Schema.org markup
-- [ ] Create LinkRedirectionService for redirect management
-- [ ] Update TimeFactorProcess to SeoToolsetProcess with enhanced features
-- [ ] Create new processors for each feature
-- [ ] Update package structure if needed
-- [ ] Test all new features
+## Features Added
+- **Canonical Tag**: `<link rel="canonical" href="post-url"/>` - Prevents duplicate content issues
+- **Twitter Card**: Complete set of Twitter Card meta tags including:
+  - twitter:card (summary_large_image)
+  - twitter:title
+  - twitter:description
+  - twitter:image
+  - twitter:url
+  - twitter:site
+
+## Configuration
+Both features are enabled by default and can be controlled via the plugin settings:
+- "Enable Canonical Tag" checkbox
+- "Enable Twitter Card" checkbox
+
+## Next Steps
+- [ ] Test the implementation by building the project
+- [ ] Verify meta tags are generated correctly in article pages

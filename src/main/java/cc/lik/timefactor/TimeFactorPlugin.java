@@ -1,11 +1,11 @@
-package cc.lik.seotoolset;
+package cc.lik.timefactor;
 
 import org.springframework.stereotype.Component;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
 
 /**
- * <p>SEO Toolset Plugin main class to manage the lifecycle of the plugin.</p>
+ * <p>Plugin main class to manage the lifecycle of the plugin.</p>
  * <p>This class must be public and have a public constructor.</p>
  * <p>Only one main class extending {@link BasePlugin} is allowed per plugin.</p>
  *
@@ -13,19 +13,19 @@ import run.halo.app.plugin.PluginContext;
  * @since 1.0.0
  */
 @Component
-public class SeoToolsetPlugin extends BasePlugin {
+public class TimeFactorPlugin extends BasePlugin {
 
-    public SeoToolsetPlugin(PluginContext pluginContext) {
+    public TimeFactorPlugin(PluginContext pluginContext) {
         super(pluginContext);
     }
 
     @Override
     public void start() {
-        System.out.println("SEO Toolset Plugin started!");
+        System.out.println("插件启动成功！");
     }
 
     @Override
     public void stop() {
-        System.out.println("SEO Toolset Plugin Stopped");
+        System.out.println("插件停止！");
     }
 }

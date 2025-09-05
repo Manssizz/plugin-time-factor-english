@@ -1,7 +1,6 @@
 package cc.lik.timefactor.process;
 
-import cc.lik.seotoolset.service.SettingConfigGetter;
-import cc.lik.seotoolset.service.SocialMediaOptimizationService;
+import cc.lik.timefactor.service.SettingConfigGetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -51,7 +50,6 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     private final SettingConfigGetter settingConfigGetter;
     private final ExternalLinkProcessor externalLinkProcessor;
     private final SystemInfoGetter systemInfoGetter;
-    private final SocialMediaOptimizationService socialMediaOptimizationService;
 
     @Override
     public Mono<Void> process(ITemplateContext context, IModel model, IElementModelStructureHandler handler) {
@@ -122,35 +120,32 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     }
 
     private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
-        var ogMono = socialMediaOptimizationService.generateOpenGraphTags(seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate(), seoData.author());
-        var twitterMono = socialMediaOptimizationService.generateTwitterCardTags(seoData.title(), seoData.description(), seoData.coverUrl());
-
-        return Mono.zip(settingConfigGetter.getBasicConfig(), ogMono, twitterMono)
-            .map(tuple -> {
-                var config = tuple.getT1();
-                var ogTags = tuple.getT2();
-                var twitterTags = tuple.getT3();
-
+        return settingConfigGetter.getBasicConfig()
+            .map(config -> {
                 var sb = new StringBuilder();
-
-                // Add canonical meta tag
-                sb.append("<link rel=\"canonical\" href=\"%s\" />\n".formatted(seoData.postUrl()));
-
-                if (config.isEnableOpenGraph()) {
-                    sb.append(ogTags);
+                
+                // 使用if-else简化配置检查
+                if (config.isEnableOGTimeFactor()) {
+                    sb.append(genOGMeta(seoData));
                 }
-                if (config.isEnableTwitterCards()) {
-                    sb.append(twitterTags);
+                if (config.isEnableMetaTimeFactor()) {
+                    sb.append(genBytedanceMeta(seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
-                if (config.isEnableBaiduStructured()) {
+                if (config.isEnableBaiduTimeFactor()) {
                     sb.append(genBaiduScript(seoData.title(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
-                if (config.isEnableSchemaOrg()) {
+                if (config.isEnableStructuredData()) {
                     sb.append(genSchemaOrgScript(seoData));
                 }
-
+                if (config.isEnableCanonicalTag()) {
+                    sb.append(genCanonicalTag(seoData.postUrl()));
+                }
+                if (config.isEnableTwitterCard()) {
+                    sb.append(genTwitterCard(seoData));
+                }
+                
                 model.add(modelFactory.createText(sb.toString()));
-                return (Void) null;
+                return Mono.<Void>empty();
             })
             .then();
     }
@@ -181,7 +176,28 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             .orElse("");
     }
 
+    private String genOGMeta(SeoData seoData) {
+        return """
+            <meta property="og:type" content="article"/>
+            <meta property="og:title" content="%s"/>
+            <meta property="og:description" content="%s"/>
+            <meta property="og:image" content="%s"/>
+            <meta property="og:url" content="%s"/>
+            <meta property="og:release_date" content="%s"/>
+            <meta property="og:modified_time" content="%s"/>
+            <meta property="og:author" content="%s"/>
+            """.formatted(
+                seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl(),
+                seoData.baiduPubDate(), seoData.baiduUpdDate(), seoData.author()
+            );
+    }
 
+    private String genBytedanceMeta(String publishDate, String updateDate) {
+        return """
+            <meta property="bytedance:published_time" content="%s"/>
+            <meta property="bytedance:updated_time" content="%s"/>
+            """.formatted(publishDate, updateDate);
+    }
 
     private String genBaiduScript(String title, String url, String publishDate, String updateDate) {
         return """
@@ -233,6 +249,26 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 seoData.googlePubDate(), seoData.googleUpdDate(), seoData.author(),
                 seoData.siteName(), seoData.siteLogo(), seoData.coverUrl(),
                 seoData.postUrl(), seoData.keywords()
+            );
+    }
+
+    private String genCanonicalTag(String postUrl) {
+        return """
+            <link rel="canonical" href="%s"/>
+            """.formatted(postUrl);
+    }
+
+    private String genTwitterCard(SeoData seoData) {
+        return """
+            <meta name="twitter:card" content="summary_large_image"/>
+            <meta name="twitter:title" content="%s"/>
+            <meta name="twitter:description" content="%s"/>
+            <meta name="twitter:image" content="%s"/>
+            <meta name="twitter:url" content="%s"/>
+            <meta name="twitter:site" content="@%s"/>
+            """.formatted(
+                seoData.title(), seoData.description(), seoData.coverUrl(),
+                seoData.postUrl(), seoData.siteName()
             );
     }
 }

@@ -1,11 +1,11 @@
 apiVersion: v1alpha1
 kind: Setting
 metadata:
-  name: plugin-seo-toolset-settings
+  name: plugin-timeFactor-settings
 spec:
   forms:
     - group: basic
-      label: Basic Configuration
+      label: "Basic Settings"
       formSchema:
         - $el: a
           attrs:
@@ -19,132 +19,68 @@ spec:
               align-items: "center"
           children:
             - $el: span
-              children: "查看 SEO Toolset 帮助文档"
+              children: "View Ink SEO Assistant Help Documentation"
             - $el: img
               attrs:
-                src: "/plugins/seo-toolset/assets/static/img/link.svg"
+                src: "/plugins/time-factor/assets/static/img/link.svg"
                 width: "14px"
                 height: "14px"
                 style:
                   margin-left: "4px"
+        - $el: span
+          children: "Halo Communication Group"
+        - $el: img
+          attrs:
+            src: "https://www.lik.cc/upload/iShot_2025-03-03_16.03.00.png"
+            width: "100px"
+            height: "120px"
+            style:
+              margin-left: "80px"
+        - $formkit: checkbox
+          label: "Enable Baidu Time Factor"
+          name: enableBaiduTimeFactor
+          id: enableBaiduTimeFactor
+          key: enableBaiduTimeFactor
+          value: true
+          help: "Baidu search engine series time factors"
+        - $formkit: checkbox
+          label: "Enable OG Time Factor"
+          name: enableOGTimeFactor
+          id: enableOGTimeFactor
+          key: enableOGTimeFactor
+          value: true
+          help: "Mainstream search engine series time factors"
+        - $formkit: checkbox
+          label: "Enable Meta Time Factor"
+          name: enableMetaTimeFactor
+          id: enableMetaTimeFactor
+          key: enableMetaTimeFactor
+          value: true
+          help: "Toutiao and other search engine series time factors"
+        - $formkit: checkbox
+          label: "Enable Structured Data"
+          name: enableStructuredData
+          id: enableStructuredData
+          key: enableStructuredData
+          value: true
+          help: "How Google, Bing and other search engines obtain content information"
+        - $formkit: checkbox
+          label: "Enable Canonical Tag"
+          name: enableCanonicalTag
+          id: enableCanonicalTag
+          key: enableCanonicalTag
+          value: true
+          help: "Add canonical URL meta tag to prevent duplicate content issues"
+        - $formkit: checkbox
+          label: "Enable Twitter Card"
+          name: enableTwitterCard
+          id: enableTwitterCard
+          key: enableTwitterCard
+          value: true
+          help: "Add Twitter Card meta tags for better social media sharing"
         - $formkit: attachment
-          label: Default Cover Image
+          label: "Default Cover Image"
           name: defaultImage
           id: defaultImage
           key: defaultImage
-          help: "Default cover thumbnail for posts without images"
-
-    - group: seo
-      label: SEO Features
-      formSchema:
-        - $formkit: checkbox
-          label: "Enable Canonical Meta Tags"
-          name: enableCanonicalTags
-          id: enableCanonicalTags
-          key: enableCanonicalTags
-          value: true
-          help: "Automatically generate canonical meta tags for posts"
-        - $formkit: checkbox
-          label: "Enable Page Analysis"
-          name: enablePageAnalysis
-          id: enablePageAnalysis
-          key: enablePageAnalysis
-          value: true
-          help: "Analyze pages for SEO optimization items"
-        - $formkit: checkbox
-          label: "Enable Crawler Logs"
-          name: enableCrawlerLogs
-          id: enableCrawlerLogs
-          key: enableCrawlerLogs
-          value: true
-          help: "Record and monitor crawler request logs"
-        - $formkit: checkbox
-          label: "Enable Website Info Check"
-          name: enableWebsiteInfo
-          id: enableWebsiteInfo
-          key: enableWebsiteInfo
-          value: true
-          help: "Check crawling status and robots.txt rules"
-
-    - group: smo
-      label: Social Media Optimization
-      formSchema:
-        - $formkit: checkbox
-          label: "Enable OpenGraph"
-          name: enableOpenGraph
-          id: enableOpenGraph
-          key: enableOpenGraph
-          value: true
-          help: "Generate OpenGraph meta tags for social sharing"
-        - $formkit: checkbox
-          label: "Enable Twitter Cards"
-          name: enableTwitterCards
-          id: enableTwitterCards
-          key: enableTwitterCards
-          value: true
-          help: "Generate Twitter Card meta tags"
-        - $formkit: checkbox
-          label: "Enable WeChat/QQ Sharing"
-          name: enableWeChatSharing
-          id: enableWeChatSharing
-          key: enableWeChatSharing
-          value: true
-          help: "Optimize for WeChat and QQ sharing"
-
-    - group: structured
-      label: Structured Data
-      formSchema:
-        - $formkit: checkbox
-          label: "Enable Schema.org Markup"
-          name: enableSchemaOrg
-          id: enableSchemaOrg
-          key: enableSchemaOrg
-          value: true
-          help: "Generate Schema.org structured data"
-        - $formkit: checkbox
-          label: "Enable Baidu Structured Data"
-          name: enableBaiduStructured
-          id: enableBaiduStructured
-          key: enableBaiduStructured
-          value: true
-          help: "Generate Baidu-specific structured data"
-
-    - group: verification
-      label: Search Engine Verification
-      formSchema:
-        - $formkit: text
-          label: "Google Verification Code"
-          name: googleVerificationCode
-          id: googleVerificationCode
-          key: googleVerificationCode
-          help: "Google Search Console verification code"
-        - $formkit: text
-          label: "Baidu Verification Code"
-          name: baiduVerificationCode
-          id: baiduVerificationCode
-          key: baiduVerificationCode
-          help: "Baidu Webmaster verification code"
-        - $formkit: text
-          label: "Bing Verification Code"
-          name: bingVerificationCode
-          id: bingVerificationCode
-          key: bingVerificationCode
-          help: "Bing Webmaster verification code"
-
-    - group: redirects
-      label: Link Redirection Management
-      formSchema:
-        - $formkit: checkbox
-          label: "Enable Redirect Management"
-          name: enableRedirects
-          id: enableRedirects
-          key: enableRedirects
-          value: true
-          help: "Manage link redirections and detect broken links"
-        - $formkit: checkbox
-          label: "Auto-detect Broken Links"
-          name: autoDetectBrokenLinks
-          id: autoDetectBrokenLinks
-          key: autoDetectBrokenLinks
-          value: true
-          help: "Automatically detect and report broken links"
+          help: "Used when no cover image is set"
