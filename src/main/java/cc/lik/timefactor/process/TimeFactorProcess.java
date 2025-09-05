@@ -1,6 +1,7 @@
 package cc.lik.timefactor.process;
 
 import cc.lik.seotoolset.service.SettingConfigGetter;
+import cc.lik.seotoolset.service.SocialMediaOptimizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
