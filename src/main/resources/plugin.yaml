@@ -9,7 +9,7 @@ spec:
   enabled: true
   requires: ">=2.21.0"
   author:
-    name: Handsome
+    name: Manssizz
     website: https://www.lik.cc
   logo: seo.png
   homepage: https://github.com/acanyo/plugin-time-factor#readme

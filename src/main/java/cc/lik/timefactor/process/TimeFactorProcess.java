@@ -87,7 +87,10 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 
             var postUrl = externalLinkProcessor.processLink(post.getStatus().getPermalink());
             var title = post.getSpec().getTitle();
-            var description = post.getSpec().getExcerpt().getRaw();
+            var description = generateDescription(post);
+            // Debug: Log description source for troubleshooting
+            System.out.println("DEBUG: Description generated - Length: " + description.length() + ", Source: " +
+                (post.getSpec().getExcerpt() != null && !post.getSpec().getExcerpt().getRaw().trim().isEmpty() ? "excerpt" : "content"));
             var coverUrl = externalLinkProcessor.processLink(
                 Optional.ofNullable(post.getSpec().getCover())
                     .filter(cover -> !cover.isBlank())
@@ -180,6 +183,43 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         return Optional.ofNullable(instant)
             .map(inst -> inst.atZone(zoneId).format(formatter))
             .orElse("");
+    }
+
+    private String generateDescription(Post post) {
+        // First try to get excerpt
+        var excerpt = Optional.ofNullable(post.getSpec().getExcerpt())
+            .map(ex -> ex.getRaw())
+            .filter(ex -> !ex.trim().isEmpty())
+            .orElse(null);
+
+        if (excerpt != null) {
+            return excerpt;
+        }
+
+        // Fallback: generate description from post content
+        return Optional.ofNullable(post.getSpec().getContent())
+            .map(content -> content.getRaw())
+            .map(this::extractSummaryFromContent)
+            .orElse("");
+    }
+
+    private String extractSummaryFromContent(String content) {
+        if (content == null || content.trim().isEmpty()) {
+            return "";
+        }
+
+        // Remove HTML tags
+        var textContent = content.replaceAll("<[^>]*>", "").trim();
+
+        // Remove extra whitespace
+        textContent = textContent.replaceAll("\\s+", " ");
+
+        // Take first 160 characters for SEO description
+        if (textContent.length() > 160) {
+            textContent = textContent.substring(0, 157) + "...";
+        }
+
+        return textContent;
     }
 
     private String genOGMeta(SeoData seoData) {

@@ -20,6 +20,10 @@
   - twitter:image
   - twitter:url
   - twitter:site
+- **Smart Description Generation**: Automatically generates SEO descriptions from article content when excerpt is not available
+  - Fallback to post content if excerpt is empty
+  - HTML tag removal and text cleaning
+  - Automatic truncation to 160 characters for optimal SEO
 
 ## Configuration
 Both features are enabled by default and can be controlled via the plugin settings:
