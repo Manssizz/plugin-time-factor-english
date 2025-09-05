@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/sitemap")
 @RequiredArgsConstructor
 public class SitemapController {
     private final SitemapService sitemapService;
