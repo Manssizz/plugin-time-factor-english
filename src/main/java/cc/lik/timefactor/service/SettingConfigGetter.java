@@ -25,6 +25,11 @@ public interface SettingConfigGetter {
         private boolean enableLinkedInTags;
         private boolean enableFacebookTags;
         private String socialImageOptimization;
+        private boolean enableXmlSitemap;
+        private String sitemapUpdateFrequency;
+        private String sitemapDefaultPriority;
+        private boolean includeCategoriesInSitemap;
+        private boolean includeTagsInSitemap;
         private String defaultImage;
     }
 }
