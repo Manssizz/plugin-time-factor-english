@@ -11,6 +11,7 @@
 - [x] Update TimeFactorProcess configuration method calls to match new settings
 - [x] Fix compilation errors and package imports
 - [x] Add GitHub Actions workflow with manual trigger support
+- [x] Update test class to use SeoToolsetPlugin and correct package structure
 
 ## Pending Tasks
 - [ ] Create VerificationCodeService for search engine verification codes
