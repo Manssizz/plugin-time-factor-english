@@ -84,3 +84,97 @@ spec:
           id: defaultImage
           key: defaultImage
           help: "Used when no cover image is set"
+        - $formkit: checkbox
+          label: "Enable Meta Robots"
+          name: enableMetaRobots
+          id: enableMetaRobots
+          key: enableMetaRobots
+          value: true
+          help: "Add robots meta tags for search engine indexing control"
+        - $formkit: select
+          label: "Robots Index Setting"
+          name: robotsIndex
+          id: robotsIndex
+          key: robotsIndex
+          value: "index"
+          options:
+            - label: "Index (allow indexing)"
+              value: "index"
+            - label: "No Index (prevent indexing)"
+              value: "noindex"
+          help: "Control whether search engines should index this content"
+        - $formkit: select
+          label: "Robots Follow Setting"
+          name: robotsFollow
+          id: robotsFollow
+          key: robotsFollow
+          value: "follow"
+          options:
+            - label: "Follow (follow links)"
+              value: "follow"
+            - label: "No Follow (don't follow links)"
+              value: "nofollow"
+          help: "Control whether search engines should follow links on this page"
+        - $formkit: checkbox
+          label: "Enable FAQ Schema"
+          name: enableFAQSchema
+          id: enableFAQSchema
+          key: enableFAQSchema
+          value: true
+          help: "Generate FAQ structured data for Q&A content"
+        - $formkit: checkbox
+          label: "Enable How-To Schema"
+          name: enableHowToSchema
+          id: enableHowToSchema
+          key: enableHowToSchema
+          value: true
+          help: "Generate How-To structured data for tutorial/guide content"
+        - $formkit: combobox
+          label: "Content Type Detection"
+          name: contentTypeDetection
+          id: contentTypeDetection
+          key: contentTypeDetection
+          value: "auto"
+          options:
+            - label: "Auto-detect"
+              value: "auto"
+            - label: "Manual override"
+              value: "manual"
+            - label: "Disabled"
+              value: "disabled"
+          help: "How to detect content types for structured data"
+        - $formkit: checkbox
+          label: "Enable Enhanced Social Media"
+          name: enableEnhancedSocial
+          id: enableEnhancedSocial
+          key: enableEnhancedSocial
+          value: true
+          help: "Add enhanced social media meta tags for better sharing"
+        - $formkit: checkbox
+          label: "Enable LinkedIn Optimization"
+          name: enableLinkedInTags
+          id: enableLinkedInTags
+          key: enableLinkedInTags
+          value: true
+          help: "Add LinkedIn-specific meta tags for professional sharing"
+        - $formkit: checkbox
+          label: "Enable Facebook Optimization"
+          name: enableFacebookTags
+          id: enableFacebookTags
+          key: enableFacebookTags
+          value: true
+          help: "Add Facebook-specific meta tags for social sharing"
+        - $formkit: select
+          label: "Social Image Optimization"
+          name: socialImageOptimization
+          id: socialImageOptimization
+          key: socialImageOptimization
+          value: "auto"
+          options:
+            - label: "Auto-resize images"
+              value: "auto"
+            - label: "Use original images"
+              value: "original"
+            - label: "Disabled"
+              value: "disabled"
+          help: "Optimize images for social media platforms"

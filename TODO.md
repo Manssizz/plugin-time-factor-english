@@ -10,6 +10,14 @@
 - [x] Renamed plugin from "time-factor" to "seo-toolkit"
 - [x] Updated display name to "SEO Toolkit"
 - [x] Updated all references in plugin.yaml, settings.yaml, and settings.gradle
+- [x] Added Meta Robots control with index/follow settings
+- [x] Implemented Enhanced Structured Data with FAQ and How-To schemas
+- [x] Added Indonesian language support for content type detection
+- [x] Updated settings with new configuration options
+- [x] Implemented Advanced Social Media Optimization
+- [x] Added enhanced Open Graph tags with image dimensions
+- [x] Added LinkedIn-specific meta tags
+- [x] Added Facebook-specific meta tags
 
 ## Features Added
 - **Canonical Tag**: `<link rel="canonical" href="post-url"/>` - Prevents duplicate content issues
@@ -24,6 +32,11 @@
   - Fallback to post content if excerpt is empty
   - HTML tag removal and text cleaning
   - Automatic truncation to 160 characters for optimal SEO
+- **Meta Robots Control**: Advanced search engine indexing control
+  - Enable/disable robots meta tags
+  - Control indexing (index/noindex)
+  - Control link following (follow/nofollow)
+  - Default: index,follow for optimal SEO
 
 ## Configuration
 Both features are enabled by default and can be controlled via the plugin settings:

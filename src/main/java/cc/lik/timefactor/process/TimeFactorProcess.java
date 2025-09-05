@@ -23,7 +23,10 @@ import run.halo.app.theme.dialect.TemplateHeadProcessor;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -43,7 +46,8 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         String googleUpdDate,
         String siteName,
         String siteLogo,
-        String keywords
+        String keywords,
+        String content
     ) {}
 
     private final ReactiveExtensionClient client;
@@ -113,11 +117,16 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 .orElse("");
             
             var finalKeywords = keywords.isBlank() ? siteKeywords : keywords;
-            
+
+            // Get post content for structured data analysis
+            var content = Optional.ofNullable(post.getSpec().getContent())
+                .map(contentSpec -> contentSpec.getRaw())
+                .orElse("");
+
             return new SeoData(
                 title, description, coverUrl, postUrl, author,
                 baiduPubDate, baiduUpdDate, googlePubDate, googleUpdDate,
-                siteName, siteLogo, finalKeywords
+                siteName, siteLogo, finalKeywords, content
             );
         });
     }
@@ -151,6 +160,44 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     sb.append("<!-- DEBUG: Twitter Card generated -->\n");
                 } else {
                     sb.append("<!-- DEBUG: Twitter Card disabled -->\n");
+                }
+                if (config.isEnableMetaRobots()) {
+                    sb.append(genMetaRobots(config.getRobotsIndex(), config.getRobotsFollow()));
+                    sb.append("<!-- DEBUG: Meta Robots generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Meta Robots disabled -->\n");
+                }
+
+                // Enhanced Social Media Optimization
+                if (config.isEnableEnhancedSocial()) {
+                    sb.append(genEnhancedOGTags(seoData));
+                    sb.append("<!-- DEBUG: Enhanced Social Media tags generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Enhanced Social Media tags disabled -->\n");
+                }
+                if (config.isEnableLinkedInTags()) {
+                    sb.append(genLinkedInTags(seoData));
+                    sb.append("<!-- DEBUG: LinkedIn tags generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: LinkedIn tags disabled -->\n");
+                }
+                if (config.isEnableFacebookTags()) {
+                    sb.append(genFacebookTags(seoData));
+                    sb.append("<!-- DEBUG: Facebook tags generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Facebook tags disabled -->\n");
+                }
+
+                // Enhanced Structured Data
+                if (config.isEnableFAQSchema() || config.isEnableHowToSchema()) {
+                    var contentType = detectContentType(seoData.content(), config.getContentTypeDetection());
+                    if ("faq".equals(contentType) && config.isEnableFAQSchema()) {
+                        sb.append(genFAQSchema(seoData));
+                        sb.append("<!-- DEBUG: FAQ Schema generated -->\n");
+                    } else if ("howto".equals(contentType) && config.isEnableHowToSchema()) {
+                        sb.append(genHowToSchema(seoData));
+                        sb.append("<!-- DEBUG: How-To Schema generated -->\n");
+                    }
                 }
                 
                 model.add(modelFactory.createText(sb.toString()));
@@ -327,4 +374,207 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 seoData.postUrl(), seoData.siteName()
             );
     }
+
+    private String genMetaRobots(String robotsIndex, String robotsFollow) {
+        var robotsContent = robotsIndex + "," + robotsFollow;
+        return """
+            <meta name="robots" content="%s"/>
+            """.formatted(robotsContent);
+    }
+
+    private String detectContentType(String content, String detectionMode) {
+        if ("disabled".equals(detectionMode)) {
+            return "none";
+        }
+
+        if ("manual".equals(detectionMode)) {
+            // For manual mode, we'd need additional metadata - for now return none
+            return "none";
+        }
+
+        // Auto-detection logic
+        if (content == null || content.isEmpty()) {
+            return "none";
+        }
+
+        var lowerContent = content.toLowerCase();
+
+        // FAQ detection patterns (English + Indonesian)
+        if (lowerContent.contains("faq") ||
+            lowerContent.contains("frequently asked questions") ||
+            lowerContent.contains("question:") ||
+            lowerContent.contains("answer:") ||
+            lowerContent.contains("pertanyaan") ||
+            lowerContent.contains("jawaban") ||
+            lowerContent.contains("tanya jawab") ||
+            lowerContent.contains("q&a")) {
+            return "faq";
+        }
+
+        // How-To detection patterns (English + Indonesian)
+        if (lowerContent.contains("how to") ||
+            lowerContent.contains("tutorial") ||
+            lowerContent.contains("guide") ||
+            lowerContent.contains("step") ||
+            lowerContent.contains("步骤") ||
+            lowerContent.contains("cara") ||
+            lowerContent.contains("panduan") ||
+            lowerContent.contains("langkah") ||
+            lowerContent.contains("bagaimana")) {
+            return "howto";
+        }
+
+        return "none";
+    }
+
+    private String genFAQSchema(SeoData seoData) {
+        // Extract Q&A pairs from content (simplified implementation)
+        var questions = extractQuestions(seoData.content());
+
+        if (questions.isEmpty()) {
+            return "";
+        }
+
+        var faqEntities = questions.stream()
+            .map(q -> """
+                {
+                  "@type": "Question",
+                  "name": "%s",
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "%s"
+                  }
+                }""".formatted(q.question(), q.answer()))
+            .collect(Collectors.joining(","));
+
+        return """
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              "mainEntity": [%s]
+            }
+            </script>
+            """.formatted(faqEntities);
+    }
+
+    private String genHowToSchema(SeoData seoData) {
+        // Extract steps from content (simplified implementation)
+        var steps = extractSteps(seoData.content());
+
+        if (steps.isEmpty()) {
+            return "";
+        }
+
+        var stepEntities = steps.stream()
+            .map(step -> """
+                {
+                  "@type": "HowToStep",
+                  "text": "%s"
+                }""".formatted(step))
+            .collect(Collectors.joining(","));
+
+        return """
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "HowTo",
+              "name": "%s",
+              "description": "%s",
+              "step": [%s]
+            }
+            </script>
+            """.formatted(seoData.title(), seoData.description(), stepEntities);
+    }
+
+    private List<QuestionAnswer> extractQuestions(String content) {
+        var questions = new ArrayList<QuestionAnswer>();
+        if (content == null) return questions;
+
+        // Simple pattern matching for Q&A
+        var lines = content.split("\n");
+        String currentQuestion = null;
+
+        for (var line : lines) {
+            var trimmed = line.trim();
+            if (trimmed.toLowerCase().startsWith("q:") ||
+                trimmed.toLowerCase().startsWith("question:") ||
+                trimmed.toLowerCase().startsWith("pertanyaan:")) {
+                currentQuestion = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+            } else if (currentQuestion != null &&
+                      (trimmed.toLowerCase().startsWith("a:") ||
+                       trimmed.toLowerCase().startsWith("answer:") ||
+                       trimmed.toLowerCase().startsWith("jawaban:"))) {
+                var answer = trimmed.substring(trimmed.indexOf(":") + 1).trim();
+                questions.add(new QuestionAnswer(currentQuestion, answer));
+                currentQuestion = null;
+            }
+        }
+
+        return questions;
+    }
+
+    private List<String> extractSteps(String content) {
+        var steps = new ArrayList<String>();
+        if (content == null) return steps;
+
+        var lines = content.split("\n");
+        for (var line : lines) {
+            var trimmed = line.trim();
+            if (trimmed.matches("\\d+\\..*") || // 1. Step text
+                trimmed.toLowerCase().startsWith("step") ||
+                trimmed.toLowerCase().startsWith("langkah")) {
+                steps.add(trimmed);
+            }
+        }
+
+        return steps;
+    }
+
+    private String genEnhancedOGTags(SeoData seoData) {
+        return """
+            <meta property="og:site_name" content="%s"/>
+            <meta property="og:locale" content="en_US"/>
+            <meta property="og:image:width" content="1200"/>
+            <meta property="og:image:height" content="630"/>
+            <meta property="og:image:alt" content="%s"/>
+            <meta property="article:author" content="%s"/>
+            <meta property="article:published_time" content="%s"/>
+            <meta property="article:modified_time" content="%s"/>
+            <meta property="article:section" content="Blog"/>
+            """.formatted(
+                seoData.siteName(), seoData.title(), seoData.author(),
+                seoData.googlePubDate(), seoData.googleUpdDate()
+            );
+    }
+
+    private String genLinkedInTags(SeoData seoData) {
+        return """
+            <meta property="og:title" content="%s"/>
+            <meta property="og:description" content="%s"/>
+            <meta property="og:image" content="%s"/>
+            <meta property="og:url" content="%s"/>
+            <meta property="og:type" content="article"/>
+            """.formatted(
+                seoData.title(), seoData.description(), seoData.coverUrl(), seoData.postUrl()
+            );
+    }
+
+    private String genFacebookTags(SeoData seoData) {
+        return """
+            <meta property="fb:app_id" content=""/>
+            <meta property="og:title" content="%s"/>
+            <meta property="og:description" content="%s"/>
+            <meta property="og:image" content="%s"/>
+            <meta property="og:url" content="%s"/>
+            <meta property="og:type" content="article"/>
+            <meta property="article:author" content="%s"/>
+            <meta property="article:published_time" content="%s"/>
+            """.formatted(
+                seoData.title(), seoData.description(), seoData.coverUrl(),
+                seoData.postUrl(), seoData.author(), seoData.googlePubDate()
+            );
+    }
+
+    private record QuestionAnswer(String question, String answer) {}
 }

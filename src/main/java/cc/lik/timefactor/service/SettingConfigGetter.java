@@ -15,6 +15,16 @@ public interface SettingConfigGetter {
         private boolean enableStructuredData;
         private boolean enableCanonicalTag;
         private boolean enableTwitterCard;
+        private boolean enableMetaRobots;
+        private String robotsIndex;
+        private String robotsFollow;
+        private boolean enableFAQSchema;
+        private boolean enableHowToSchema;
+        private String contentTypeDetection;
+        private boolean enableEnhancedSocial;
+        private boolean enableLinkedInTags;
+        private boolean enableFacebookTags;
+        private String socialImageOptimization;
         private String defaultImage;
     }
 }
