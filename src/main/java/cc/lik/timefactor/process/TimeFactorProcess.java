@@ -119,9 +119,8 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             var finalKeywords = keywords.isBlank() ? siteKeywords : keywords;
 
             // Get post content for structured data analysis
-            var content = Optional.ofNullable(post.getSpec().getContent())
-                .map(contentSpec -> contentSpec.getRaw())
-                .orElse("");
+            // Note: Content access may not be available in current Halo API
+            var content = "";
 
             return new SeoData(
                 title, description, coverUrl, postUrl, author,
