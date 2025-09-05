@@ -3,5 +3,5 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'plugin-time-factor'
+rootProject.name = 'plugin-seo-toolkit'
 include 'ui'

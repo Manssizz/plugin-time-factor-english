@@ -1,7 +1,7 @@
 apiVersion: v1alpha1
 kind: Setting
 metadata:
-  name: plugin-timeFactor-settings
+  name: plugin-seoToolkit-settings
 spec:
   forms:
     - group: basic
@@ -22,7 +22,7 @@ spec:
               children: "View Ink SEO Assistant Help Documentation"
             - $el: img
               attrs:
-                src: "/plugins/time-factor/assets/static/img/link.svg"
+                src: "/plugins/seo-toolkit/assets/static/img/link.svg"
                 width: "14px"
                 height: "14px"
                 style:
