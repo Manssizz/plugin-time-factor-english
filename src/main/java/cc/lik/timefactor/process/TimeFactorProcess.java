@@ -139,9 +139,15 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 }
                 if (config.isEnableCanonicalTag()) {
                     sb.append(genCanonicalTag(seoData.postUrl()));
+                    sb.append("<!-- DEBUG: Canonical tag generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Canonical tag disabled -->\n");
                 }
                 if (config.isEnableTwitterCard()) {
                     sb.append(genTwitterCard(seoData));
+                    sb.append("<!-- DEBUG: Twitter Card generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Twitter Card disabled -->\n");
                 }
                 
                 model.add(modelFactory.createText(sb.toString()));

@@ -25,3 +25,5 @@ Both features are enabled by default and can be controlled via the plugin settin
 ## Next Steps
 - [ ] Test the implementation by building the project
 - [ ] Verify meta tags are generated correctly in article pages
+- [x] Added debug comments to verify if canonical and Twitter meta tags are being generated
+- [ ] Check HTML source for debug comments to diagnose the issue
