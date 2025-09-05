@@ -128,16 +128,16 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 sb.append("<link rel=\"canonical\" href=\"%s\" />\n".formatted(seoData.postUrl()));
 
                 // 使用if-else简化配置检查
-                if (config.isEnableOGTimeFactor()) {
+                if (config.isEnableOpenGraph()) {
                     sb.append(genOGMeta(seoData));
                 }
-                if (config.isEnableMetaTimeFactor()) {
+                if (config.isEnableTwitterCards()) {
                     sb.append(genBytedanceMeta(seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
-                if (config.isEnableBaiduTimeFactor()) {
+                if (config.isEnableBaiduStructured()) {
                     sb.append(genBaiduScript(seoData.title(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
-                if (config.isEnableStructuredData()) {
+                if (config.isEnableSchemaOrg()) {
                     sb.append(genSchemaOrgScript(seoData));
                 }
 
