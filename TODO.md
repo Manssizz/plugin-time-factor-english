@@ -18,10 +18,10 @@
 - [x] Added enhanced Open Graph tags with image dimensions
 - [x] Added LinkedIn-specific meta tags
 - [x] Added Facebook-specific meta tags
-- [x] Implemented Automatic XML Sitemap Generation
-- [x] Added sitemap update frequency and priority controls
-- [x] Included categories and tags in sitemap
-- [x] Created sitemap service and REST endpoint
+- [x] Implemented Article Schema Markup for rich snippets
+- [x] Added configurable article types (BlogPosting, NewsArticle, etc.)
+- [x] Included breadcrumb navigation in schema
+- [x] Added reading time estimation
 
 ## Features Added
 - **Canonical Tag**: `<link rel="canonical" href="post-url"/>` - Prevents duplicate content issues
@@ -41,22 +41,23 @@
   - Control indexing (index/noindex)
   - Control link following (follow/nofollow)
   - Default: index,follow for optimal SEO
-- **XML Sitemap Generation**: Automatic sitemap creation for search engines
-  - Dynamic XML sitemap at `/sitemap.xml`
-  - Configurable update frequency (always, hourly, daily, weekly, monthly, yearly, never)
-  - Customizable priority settings (0.1 to 1.0)
-  - Include/exclude categories and tags
-  - Automatic last modification dates
+- **Article Schema Markup**: Complete JSON-LD structured data for articles
+  - Rich snippets in Google Search results
+  - Configurable article types (BlogPosting, NewsArticle, TechArticle, ScholarlyArticle)
+  - Publisher information and author details
+  - Breadcrumb navigation integration
+  - Reading time estimation (200 words/minute)
+  - Enhanced search visibility and CTR
 
 ## Configuration
 All SEO features are enabled by default and can be controlled via the plugin settings:
 - "Enable Canonical Tag" checkbox
 - "Enable Twitter Card" checkbox
-- "Enable XML Sitemap" checkbox
-- "Sitemap Update Frequency" selector
-- "Default Priority" selector
-- "Include Categories in Sitemap" checkbox
-- "Include Tags in Sitemap" checkbox
+- "Enable Article Schema" checkbox
+- "Article Type" selector (BlogPosting/NewsArticle/TechArticle/ScholarlyArticle)
+- "Publisher Name" text field
+- "Include Breadcrumbs" checkbox
+- "Estimate Reading Time" checkbox
 
 ## Next Steps
 - [ ] Test the implementation by building the project

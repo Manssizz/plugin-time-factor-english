@@ -179,63 +179,46 @@ spec:
               value: "disabled"
           help: "Optimize images for social media platforms"
         - $formkit: checkbox
-          label: "Enable XML Sitemap"
-          name: enableXmlSitemap
-          id: enableXmlSitemap
-          key: enableXmlSitemap
+          label: "Enable Article Schema"
+          name: enableArticleSchema
+          id: enableArticleSchema
+          key: enableArticleSchema
           value: true
-          help: "Generate XML sitemap for search engines"
+          help: "Generate Article schema markup for rich snippets"
         - $formkit: select
-          label: "Sitemap Update Frequency"
-          name: sitemapUpdateFrequency
-          id: sitemapUpdateFrequency
-          key: sitemapUpdateFrequency
-          value: "daily"
+          label: "Article Type"
+          name: articleSchemaType
+          id: articleSchemaType
+          key: articleSchemaType
+          value: "BlogPosting"
           options:
-            - label: "Always"
-              value: "always"
-            - label: "Hourly"
-              value: "hourly"
-            - label: "Daily"
-              value: "daily"
-            - label: "Weekly"
-              value: "weekly"
-            - label: "Monthly"
-              value: "monthly"
-            - label: "Yearly"
-              value: "yearly"
-            - label: "Never"
-              value: "never"
-          help: "How often the sitemap content changes"
-        - $formkit: select
-          label: "Default Priority"
-          name: sitemapDefaultPriority
-          id: sitemapDefaultPriority
-          key: sitemapDefaultPriority
-          value: "0.5"
-          options:
-            - label: "1.0 (Highest)"
-              value: "1.0"
-            - label: "0.8 (High)"
-              value: "0.8"
-            - label: "0.5 (Medium)"
-              value: "0.5"
-            - label: "0.3 (Low)"
-              value: "0.3"
-            - label: "0.1 (Lowest)"
-              value: "0.1"
-          help: "Default priority for sitemap URLs"
+            - label: "BlogPosting"
+              value: "BlogPosting"
+            - label: "NewsArticle"
+              value: "NewsArticle"
+            - label: "TechArticle"
+              value: "TechArticle"
+            - label: "ScholarlyArticle"
+              value: "ScholarlyArticle"
+          help: "Schema.org article type for your content"
+        - $formkit: text
+          label: "Publisher Name"
+          name: publisherName
+          id: publisherName
+          key: publisherName
+          value: ""
+          help: "Organization name for article publisher"
         - $formkit: checkbox
-          label: "Include Categories in Sitemap"
-          name: includeCategoriesInSitemap
-          id: includeCategoriesInSitemap
-          key: includeCategoriesInSitemap
+          label: "Include Breadcrumbs"
+          name: includeBreadcrumbs
+          id: includeBreadcrumbs
+          key: includeBreadcrumbs
           value: true
-          help: "Include category pages in the XML sitemap"
+          help: "Include breadcrumb navigation in article schema"
         - $formkit: checkbox
-          label: "Include Tags in Sitemap"
-          name: includeTagsInSitemap
-          id: includeTagsInSitemap
-          key: includeTagsInSitemap
+          label: "Estimate Reading Time"
+          name: estimateReadingTime
+          id: estimateReadingTime
+          key: estimateReadingTime
           value: true
-          help: "Include tag pages in the XML sitemap"
+          help: "Estimate and include reading time in schema"

@@ -198,6 +198,14 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                         sb.append("<!-- DEBUG: How-To Schema generated -->\n");
                     }
                 }
+
+                // Article Schema Markup
+                if (config.isEnableArticleSchema()) {
+                    sb.append(genArticleSchema(seoData, config));
+                    sb.append("<!-- DEBUG: Article Schema generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Article Schema disabled -->\n");
+                }
                 
                 model.add(modelFactory.createText(sb.toString()));
                 return Mono.<Void>empty();
@@ -573,6 +581,98 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 seoData.title(), seoData.description(), seoData.coverUrl(),
                 seoData.postUrl(), seoData.author(), seoData.googlePubDate()
             );
+    }
+
+    private String genArticleSchema(SeoData seoData, SettingConfigGetter.BasicConfig config) {
+        var schemaType = config.getArticleSchemaType() != null ? config.getArticleSchemaType() : "BlogPosting";
+        var publisherName = config.getPublisherName() != null && !config.getPublisherName().isEmpty()
+            ? config.getPublisherName() : seoData.siteName();
+
+        var readingTime = "";
+        if (config.isEstimateReadingTime()) {
+            var estimatedTime = estimateReadingTime(seoData.content());
+            if (estimatedTime > 0) {
+                readingTime = """
+                    ,"timeRequired": "PT%dM\"""".formatted(estimatedTime);
+            }
+        }
+
+        var breadcrumbList = "";
+        if (config.isIncludeBreadcrumbs()) {
+            breadcrumbList = """
+                ,"breadcrumb": {
+                  "@type": "BreadcrumbList",
+                  "itemListElement": [
+                    {
+                      "@type": "ListItem",
+                      "position": 1,
+                      "name": "Home",
+                      "item": "%s"
+                    },
+                    {
+                      "@type": "ListItem",
+                      "position": 2,
+                      "name": "%s",
+                      "item": "%s"
+                    }
+                  ]
+                }""".formatted(
+                    seoData.postUrl().replace("/" + seoData.title().toLowerCase().replace(" ", "-"), ""),
+                    seoData.title(), seoData.postUrl()
+                );
+        }
+
+        return """
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "%s",
+              "headline": "%s",
+              "description": "%s",
+              "image": "%s",
+              "datePublished": "%s",
+              "dateModified": "%s",
+              "author": {
+                "@type": "Person",
+                "name": "%s"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "%s",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "%s"
+                }
+              },
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "%s"
+              },
+              "articleSection": "Blog",
+              "keywords": "%s"%s%s
+            }
+            </script>
+            """.formatted(
+                schemaType, seoData.title(), seoData.description(), seoData.coverUrl(),
+                seoData.googlePubDate(), seoData.googleUpdDate(), seoData.author(),
+                publisherName, seoData.siteLogo(), seoData.postUrl(), seoData.keywords(),
+                readingTime, breadcrumbList
+            );
+    }
+
+    private int estimateReadingTime(String content) {
+        if (content == null || content.isEmpty()) {
+            return 0;
+        }
+
+        // Remove HTML tags and count words
+        var textContent = content.replaceAll("<[^>]*>", "").trim();
+        var wordCount = textContent.split("\\s+").length;
+
+        // Average reading speed: 200 words per minute
+        var readingTimeMinutes = Math.max(1, wordCount / 200);
+
+        return readingTimeMinutes;
     }
 
     private record QuestionAnswer(String question, String answer) {}
