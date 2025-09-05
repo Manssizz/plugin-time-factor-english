@@ -47,7 +47,7 @@ public class SitemapService {
                     var tagsXml = tuple.getT3();
                     var systemInfo = tuple.getT4();
 
-                    var siteUrl = externalLinkProcessor.processLink(systemInfo.getUrl());
+                    var siteUrl = externalLinkProcessor.processLink(systemInfo.getUrl().toString());
 
                     return """
                         <?xml version="1.0" encoding="UTF-8"?>
