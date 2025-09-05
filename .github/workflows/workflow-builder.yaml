@@ -63,9 +63,10 @@ jobs:
           name: plugin-build-${{ github.run_number }}
 
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.BUILD_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v${{ github.event.inputs.version || github.run_number }}
           release_name: Release ${{ github.event.inputs.version || github.run_number }}
