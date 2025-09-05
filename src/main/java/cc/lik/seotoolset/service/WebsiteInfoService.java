@@ -16,7 +16,6 @@ import java.time.Duration;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class WebsiteInfoService {
 
     private final HttpClient httpClient = HttpClient.newBuilder()
