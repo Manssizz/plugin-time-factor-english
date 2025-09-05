@@ -4,7 +4,7 @@ apiVersion: plugin.halo.run/v1alpha1
 kind: Plugin
 metadata:
   # The name defines how the plugin is invoked, A unique name
-  name: time-factor
+  name: seo-toolset
 spec:
   enabled: true
   requires: ">=2.21.0"
@@ -15,10 +15,10 @@ spec:
   homepage: https://github.com/acanyo/plugin-time-factor#readme
   repo: https://github.com/acanyo/plugin-time-factor
   issues: https://github.com/acanyo/plugin-time-factor/issues
-  displayName: "SEO Timefactor"
+  displayName: "SEO Toolset"
   description: "An all-in-one SEO plugin with meta tag supports Baidu, Google, and Byte!"
-  settingName: plugin-timeFactor-settings
-  configMapName: plugin-timeFactor-configMap
+  settingName: plugin-seo-toolset-settings
+  configMapName: plugin-seo-toolset-configMap
   license:
     - name: "GPL-3.0"
       url: "https://github.com/acanyo/plugin-time-factor/blob/main/LICENSE"
