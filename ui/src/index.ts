@@ -1,8 +1,10 @@
-import { definePlugin } from '@halo-dev/console-shared'
+import { App } from 'vue'
+import ImageOptimizationPanel from './components/ImageOptimizationPanel.vue'
+import ImagePreview from './components/ImagePreview.vue'
 
-export default definePlugin({
-  components: {},
-  routes: [
-  ],
-  extensionPoints: {},
-})
+export default {
+  install(app: App) {
+    app.component('ImageOptimizationPanel', ImageOptimizationPanel)
+    app.component('ImagePreview', ImagePreview)
+  }
+}

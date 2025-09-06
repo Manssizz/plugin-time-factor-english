@@ -222,3 +222,182 @@ spec:
           key: estimateReadingTime
           value: true
           help: "Estimate and include reading time in schema"
+    - group: contentAnalysis
+      label: "Content Analysis"
+      formSchema:
+        - $formkit: checkbox
+          label: "Enable Content Analysis"
+          name: enableContentAnalysis
+          id: enableContentAnalysis
+          key: enableContentAnalysis
+          value: true
+          help: "Enable content analysis and SEO suggestions"
+        - $formkit: checkbox
+          label: "Enable Keyword Density Analysis"
+          name: enableKeywordDensity
+          id: enableKeywordDensity
+          key: enableKeywordDensity
+          value: true
+          help: "Analyze keyword density and provide optimization suggestions"
+        - $formkit: checkbox
+          label: "Enable Readability Score"
+          name: enableReadabilityScore
+          id: enableReadabilityScore
+          key: enableReadabilityScore
+          value: true
+          help: "Calculate readability score using Flesch-Kincaid formula"
+        - $formkit: checkbox
+          label: "Enable Internal Linking Suggestions"
+          name: enableInternalLinking
+          id: enableInternalLinking
+          key: enableInternalLinking
+          value: true
+          help: "Suggest internal links based on content analysis"
+        - $formkit: checkbox
+          label: "Enable Content Optimization"
+          name: enableContentOptimization
+          id: enableContentOptimization
+          key: enableContentOptimization
+          value: true
+          help: "Provide content length and structure optimization suggestions"
+    - group: technical
+      label: "Technical SEO"
+      formSchema:
+        - $formkit: checkbox
+          label: "Enable Technical SEO Audit"
+          name: enableTechnicalAudit
+          id: enableTechnicalAudit
+          key: enableTechnicalAudit
+          value: true
+          help: "Enable automated technical SEO checks"
+        - $formkit: checkbox
+          label: "Enable Page Speed Monitoring"
+          name: enablePageSpeed
+          id: enablePageSpeed
+          key: enablePageSpeed
+          value: true
+          help: "Monitor page speed and performance metrics"
+        - $formkit: checkbox
+          label: "Enable Mobile-Friendly Checks"
+          name: enableMobileFriendly
+          id: enableMobileFriendly
+          key: enableMobileFriendly
+          value: true
+          help: "Check mobile-friendliness of pages"
+        - $formkit: checkbox
+          label: "Enable Broken Link Detection"
+          name: enableBrokenLinks
+          id: enableBrokenLinks
+          key: enableBrokenLinks
+          value: true
+          help: "Detect and report broken links"
+        - $formkit: checkbox
+          label: "Enable Core Web Vitals"
+          name: enableCoreWebVitals
+          id: enableCoreWebVitals
+          key: enableCoreWebVitals
+          value: true
+          help: "Monitor Core Web Vitals metrics"
+    - group: imageOptimization
+      label: "Image Optimization"
+      formSchema:
+        - $formkit: checkbox
+          label: "Enable Image Optimization"
+          name: enableImageOptimization
+          id: enableImageOptimization
+          key: enableImageOptimization
+          value: true
+          help: "Enable comprehensive image optimization features"
+        - $formkit: checkbox
+          label: "Enable Automatic Alt Text"
+          name: enableAutoAltText
+          id: enableAutoAltText
+          key: enableAutoAltText
+          value: true
+          help: "Automatically generate SEO-friendly alt text for images"
+        - $formkit: checkbox
+          label: "Enable Image File Optimization"
+          name: enableImageFileOptimization
+          id: enableImageFileOptimization
+          key: enableImageFileOptimization
+          value: true
+          help: "Optimize image file names for better SEO"
+        - $formkit: checkbox
+          label: "Enable Dynamic OG Images"
+          name: enableDynamicOGImages
+          id: enableDynamicOGImages
+          key: enableDynamicOGImages
+          value: true
+          help: "Generate dynamic Open Graph images for social media"
+        - $formkit: checkbox
+          label: "Enable Lazy Loading"
+          name: enableLazyLoading
+          id: enableLazyLoading
+          key: enableLazyLoading
+          value: true
+          help: "Implement lazy loading for improved page performance"
+        - $formkit: text
+          label: "AI Service API Key"
+          name: aiServiceApiKey
+          id: aiServiceApiKey
+          key: aiServiceApiKey
+          value: ""
+          help: "API key for AI-powered alt text generation service"
+        - $formkit: select
+          label: "AI Service Provider"
+          name: aiServiceProvider
+          id: aiServiceProvider
+          key: aiServiceProvider
+          value: "openai"
+          options:
+            - label: "OpenAI"
+              value: "openai"
+            - label: "Google Vision AI"
+              value: "google_vision"
+            - label: "Azure Computer Vision"
+              value: "azure_cv"
+          help: "Choose AI service for image analysis and alt text generation"
+        - $formkit: select
+          label: "Image Quality"
+          name: imageQuality
+          id: imageQuality
+          key: imageQuality
+          value: "high"
+          options:
+            - label: "High (Best quality)"
+              value: "high"
+            - label: "Medium (Balanced)"
+              value: "medium"
+            - label: "Low (Smaller files)"
+              value: "low"
+          help: "Set image optimization quality level"
+        - $formkit: text
+          label: "OG Image Width"
+          name: ogImageWidth
+          id: ogImageWidth
+          key: ogImageWidth
+          value: "1200"
+          help: "Width for generated Open Graph images (pixels)"
+        - $formkit: text
+          label: "OG Image Height"
+          name: ogImageHeight
+          id: ogImageHeight
+          key: ogImageHeight
+          value: "630"
+          help: "Height for generated Open Graph images (pixels)"
+        - $formkit: select
+          label: "Lazy Loading Threshold"
+          name: lazyLoadingThreshold
+          id: lazyLoadingThreshold
+          key: lazyLoadingThreshold
+          value: "200"
+          options:
+            - label: "100px"
+              value: "100"
+            - label: "200px"
+              value: "200"
+            - label: "300px"
+              value: "300"
+            - label: "500px"
+              value: "500"
+          help: "Distance from viewport to start loading images (pixels)"

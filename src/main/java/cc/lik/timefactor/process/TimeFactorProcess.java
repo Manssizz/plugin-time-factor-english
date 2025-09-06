@@ -1,6 +1,8 @@
 package cc.lik.timefactor.process;
 
 import cc.lik.timefactor.service.SettingConfigGetter;
+import cc.lik.timefactor.service.ContentAnalysisService;
+import cc.lik.timefactor.service.ImageOptimizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -52,6 +54,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
 
     private final ReactiveExtensionClient client;
     private final SettingConfigGetter settingConfigGetter;
+    private final ContentAnalysisService contentAnalysisService;
     private final ExternalLinkProcessor externalLinkProcessor;
     private final SystemInfoGetter systemInfoGetter;
 
@@ -132,60 +135,636 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
 
     private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
         return settingConfigGetter.getBasicConfig()
-            .map(config -> {
+            .flatMap(config -> {
                 var sb = new StringBuilder();
-                
-                // 使用if-else简化配置检查
+
+                // Existing SEO tags generation
                 if (config.isEnableOGTimeFactor()) {
                     sb.append(genOGMeta(seoData));
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableMetaTimeFactor()) {
                     sb.append(genBytedanceMeta(seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableBaiduTimeFactor()) {
                     sb.append(genBaiduScript(seoData.title(), seoData.postUrl(), seoData.baiduPubDate(), seoData.baiduUpdDate()));
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableStructuredData()) {
                     sb.append(genSchemaOrgScript(seoData));
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableCanonicalTag()) {
                     sb.append(genCanonicalTag(seoData.postUrl()));
                     sb.append("<!-- DEBUG: Canonical tag generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: Canonical tag disabled -->\n");
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableTwitterCard()) {
                     sb.append(genTwitterCard(seoData));
                     sb.append("<!-- DEBUG: Twitter Card generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: Twitter Card disabled -->\n");
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableMetaRobots()) {
                     sb.append(genMetaRobots(config.getRobotsIndex(), config.getRobotsFollow()));
                     sb.append("<!-- DEBUG: Meta Robots generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: Meta Robots disabled -->\n");
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
 
                 // Enhanced Social Media Optimization
                 if (config.isEnableEnhancedSocial()) {
                     sb.append(genEnhancedOGTags(seoData));
                     sb.append("<!-- DEBUG: Enhanced Social Media tags generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: Enhanced Social Media tags disabled -->\n");
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableLinkedInTags()) {
                     sb.append(genLinkedInTags(seoData));
                     sb.append("<!-- DEBUG: LinkedIn tags generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: LinkedIn tags disabled -->\n");
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 if (config.isEnableFacebookTags()) {
                     sb.append(genFacebookTags(seoData));
                     sb.append("<!-- DEBUG: Facebook tags generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: Facebook tags disabled -->\n");
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
 
                 // Enhanced Structured Data
                 if (config.isEnableFAQSchema() || config.isEnableHowToSchema()) {
@@ -194,23 +773,486 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                         sb.append(genFAQSchema(seoData));
                         sb.append("<!-- DEBUG: FAQ Schema generated -->\n");
                     } else if ("howto".equals(contentType) && config.isEnableHowToSchema()) {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                         sb.append(genHowToSchema(seoData));
                         sb.append("<!-- DEBUG: How-To Schema generated -->\n");
                     }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
                 }
+
+                }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
 
                 // Article Schema Markup
                 if (config.isEnableArticleSchema()) {
                     sb.append(genArticleSchema(seoData, config));
                     sb.append("<!-- DEBUG: Article Schema generated -->\n");
                 } else {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     sb.append("<!-- DEBUG: Article Schema disabled -->\n");
                 }
-                
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+
+                // Content Analysis & Suggestions
+                if (config.isEnableContentAnalysis()) {
+                    var analysisResult = contentAnalysisService.analyzeContent(
+                        seoData.content(), seoData.title(), seoData.keywords());
+
+                    sb.append("<!-- Content Analysis Results -->\n");
+                    sb.append(String.format("<!-- Word Count: %d -->\n", analysisResult.wordCount()));
+                    sb.append(String.format("<!-- Readability Score: %.2f -->\n", analysisResult.readabilityScore()));
+
+                    if (config.isEnableKeywordDensity()) {
+                        sb.append("<!-- Keyword Density Analysis -->\n");
+                        for (var kd : analysisResult.keywordDensity()) {
+                            sb.append(String.format("<!-- Keyword: %s, Count: %d, Density: %.2f%%, Recommendation: %s -->\n",
+                                kd.keyword(), kd.count(), kd.density(), kd.recommendation()));
+                        }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+                    }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+
+                    if (config.isEnableInternalLinking()) {
+                        sb.append("<!-- Internal Linking Suggestions -->\n");
+                        for (var suggestion : analysisResult.linkingSuggestions()) {
+                            sb.append(String.format("<!-- %s -->\n", suggestion));
+                        }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+                    }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+
+                    if (config.isEnableContentOptimization()) {
+                        sb.append("<!-- Content Optimization Suggestions -->\n");
+                        for (var suggestion : analysisResult.optimizationSuggestions()) {
+                            sb.append(String.format("<!-- %s -->\n", suggestion));
+                        }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+                    }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+                }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
+
                 model.add(modelFactory.createText(sb.toString()));
                 return Mono.<Void>empty();
-            })
-            .then();
+            });
     }
 
     private Mono<String> findTag(Post post) {
@@ -261,8 +1303,80 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     // TODO: Implement proper content access when Halo API allows it
                     return "Article by " + post.getSpec().getOwner() + " - " + post.getSpec().getTitle();
                 } catch (Exception e) {
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     return "";
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
             })
             .orElse("");
     }
@@ -348,6 +1462,42 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                   "@type": "ImageObject",
                   "url": "%s"
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
               },
               "image": "%s",
               "url": "%s",
@@ -451,7 +1601,79 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     "@type": "Answer",
                     "text": "%s"
                   }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                 }""".formatted(q.question(), q.answer()))
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
             .collect(Collectors.joining(","));
 
         return """
@@ -479,6 +1701,42 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                   "@type": "HowToStep",
                   "text": "%s"
                 }""".formatted(step))
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
             .collect(Collectors.joining(","));
 
         return """
@@ -609,14 +1867,122 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                       "name": "Home",
                       "item": "%s"
                     },
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     {
                       "@type": "ListItem",
                       "position": 2,
                       "name": "%s",
                       "item": "%s"
                     }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                   ]
                 }""".formatted(
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
                     seoData.postUrl().replace("/" + seoData.title().toLowerCase().replace(" ", "-"), ""),
                     seoData.title(), seoData.postUrl()
                 );
@@ -643,6 +2009,42 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                   "@type": "ImageObject",
                   "url": "%s"
                 }
+
+                // Image Optimization
+                if (config.isEnableImageOptimization()) {
+                    sb.append("<!-- Image Optimization Features -->
+");
+                    
+                    if (config.isEnableAutoAltText() && !seoData.coverUrl().isEmpty()) {
+                        var altText = imageOptimizationService.generateAltText(seoData.coverUrl());
+                        sb.append(String.format("<!-- Generated Alt Text: %s -->
+", altText.block()));
+                    }
+                    
+                    if (config.isEnableImageFileOptimization()) {
+                        var optimizedFileName = imageOptimizationService.optimizeFileName("cover-image.jpg");
+                        sb.append(String.format("<!-- Optimized File Name: %s -->
+", optimizedFileName));
+                    }
+                    
+                    if (config.isEnableDynamicOGImages()) {
+                        var ogImageUrl = imageOptimizationService.generateDynamicOGImage(seoData.coverUrl());
+                        sb.append(String.format("<!-- Dynamic OG Image: %s -->
+", ogImageUrl));
+                    }
+                    
+                    if (config.isEnableLazyLoading()) {
+                        sb.append("<!-- Lazy Loading enabled for images -->
+");
+                    }
+                    
+                    sb.append("<!-- DEBUG: Image Optimization features processed -->
+");
+                } else {
+                    sb.append("<!-- DEBUG: Image Optimization disabled -->
+");
+                }
+
               },
               "mainEntityOfPage": {
                 "@type": "WebPage",
