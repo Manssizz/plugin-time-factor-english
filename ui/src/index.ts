@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import { type App } from 'vue'
 import ImageOptimizationPanel from './components/ImageOptimizationPanel.vue'
 import ImagePreview from './components/ImagePreview.vue'
 
