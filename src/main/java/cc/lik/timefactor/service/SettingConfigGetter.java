@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 public interface SettingConfigGetter {
     Mono<BasicConfig> getBasicConfig();
     Mono<AdvancedConfig> getAdvancedConfig();
+    Mono<AnalyticsConfig> getAnalyticsConfig();
 
     @Data
     class BasicConfig {
@@ -48,5 +49,17 @@ public interface SettingConfigGetter {
         private boolean enableBaiduPush;
         private String baiduApiKey;
         private String siteUrl;
+    }
+
+    @Data
+    class AnalyticsConfig {
+        public static final String GROUP = "analytics";
+        private boolean enableGoogleAnalytics;
+        private String googleAnalyticsId;
+        private boolean enableSearchConsoleIntegration;
+        private String searchConsoleVerification;
+        private boolean enableCoreWebVitals;
+        private String pageSpeedApiKey;
+        private boolean enableSEODashboard;
     }
 }

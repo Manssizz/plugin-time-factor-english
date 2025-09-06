@@ -23,4 +23,10 @@ public class SettingConfigGetterImpl implements SettingConfigGetter {
         return settingFetcher.fetch(AdvancedConfig.GROUP, AdvancedConfig.class)
             .defaultIfEmpty(new AdvancedConfig());
     }
+
+    @Override
+    public Mono<AnalyticsConfig> getAnalyticsConfig() {
+        return settingFetcher.fetch(AnalyticsConfig.GROUP, AnalyticsConfig.class)
+            .defaultIfEmpty(new AnalyticsConfig());
+    }
 }

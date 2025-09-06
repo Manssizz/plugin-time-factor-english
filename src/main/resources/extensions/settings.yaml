@@ -306,3 +306,52 @@ spec:
           id: baiduApiKey
           key: baiduApiKey
           help: "API key for Baidu Webmaster Tools integration"
+    - group: analytics
+      label: "Analytics Integration"
+      formSchema:
+        - $formkit: checkbox
+          label: "Enable Google Analytics 4"
+          name: enableGoogleAnalytics
+          id: enableGoogleAnalytics
+          key: enableGoogleAnalytics
+          value: false
+          help: "Enable Google Analytics 4 tracking for your website"
+        - $formkit: text
+          label: "Google Analytics Measurement ID"
+          name: googleAnalyticsId
+          id: googleAnalyticsId
+          key: googleAnalyticsId
+          help: "Your GA4 Measurement ID (G-XXXXXXXXXX)"
+        - $formkit: checkbox
+          label: "Enable Search Console Integration"
+          name: enableSearchConsoleIntegration
+          id: enableSearchConsoleIntegration
+          key: enableSearchConsoleIntegration
+          value: false
+          help: "Integrate with Google Search Console for indexing status"
+        - $formkit: text
+          label: "Search Console Verification Code"
+          name: searchConsoleVerification
+          id: searchConsoleVerification
+          key: searchConsoleVerification
+          help: "Google Search Console verification meta tag content"
+        - $formkit: checkbox
+          label: "Enable Core Web Vitals Monitoring"
+          name: enableCoreWebVitals
+          id: enableCoreWebVitals
+          key: enableCoreWebVitals
+          value: false
+          help: "Monitor Core Web Vitals metrics for performance tracking"
+        - $formkit: text
+          label: "PageSpeed Insights API Key"
+          name: pageSpeedApiKey
+          id: pageSpeedApiKey
+          key: pageSpeedApiKey
+          help: "API key for Google PageSpeed Insights (optional)"
+        - $formkit: checkbox
+          label: "Enable SEO Performance Dashboard"
+          name: enableSEODashboard
+          id: enableSEODashboard
+          key: enableSEODashboard
+          value: true
+          help: "Display SEO performance metrics and analytics dashboard"
