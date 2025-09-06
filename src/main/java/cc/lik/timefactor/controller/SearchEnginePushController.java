@@ -15,27 +15,21 @@ public class SearchEnginePushController {
     }
 
     @PostMapping("/push-to-search-engines")
-    public ResponseEntity<String> pushToSearchEngines(
+    public Mono<ResponseEntity<String>> pushToSearchEngines(
             @RequestParam String url,
             @RequestParam(required = false) String sitemapUrl) {
 
-        try {
-            searchEnginePushService.pushToSearchEngines(url, sitemapUrl);
-            return ResponseEntity.ok("Successfully initiated push to search engines for URL: " + url);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                .body("Failed to push to search engines: " + e.getMessage());
-        }
+        return searchEnginePushService.pushToSearchEngines(url, sitemapUrl)
+            .then(Mono.just(ResponseEntity.ok("Successfully initiated push to search engines for URL: " + url)))
+            .onErrorResume(e -> Mono.just(ResponseEntity.internalServerError()
+                .body("Failed to push to search engines: " + e.getMessage())));
     }
 
     @PostMapping("/push-sitemap")
-    public ResponseEntity<String> pushSitemap(@RequestParam String sitemapUrl) {
-        try {
-            searchEnginePushService.pushToSearchEngines(null, sitemapUrl);
-            return ResponseEntity.ok("Successfully initiated sitemap push to search engines: " + sitemapUrl);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                .body("Failed to push sitemap to search engines: " + e.getMessage());
-        }
+    public Mono<ResponseEntity<String>> pushSitemap(@RequestParam String sitemapUrl) {
+        return searchEnginePushService.pushToSearchEngines(null, sitemapUrl)
+            .then(Mono.just(ResponseEntity.ok("Successfully initiated sitemap push to search engines: " + sitemapUrl)))
+            .onErrorResume(e -> Mono.just(ResponseEntity.internalServerError()
+                .body("Failed to push sitemap to search engines: " + e.getMessage())));
     }
 }

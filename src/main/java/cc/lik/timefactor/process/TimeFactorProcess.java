@@ -77,11 +77,13 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     // Generate SEO tags
                     return generateSeoTags(seoData, model, modelFactory)
                         // After generating SEO tags, push URLs to search engines if enabled
-                        .then(Mono.fromRunnable(() -> {
-                            if (settingConfigGetter.getSetting("autoPushOnPublish", Boolean.class, true)) {
-                                searchEnginePushService.pushToSearchEngines(seoData.postUrl(), null);
-                            }
-                        }));
+                        .then(settingConfigGetter.getAdvancedConfig()
+                            .flatMap(config -> {
+                                if (config.isAutoPushOnPublish()) {
+                                    return searchEnginePushService.pushToSearchEngines(seoData.postUrl(), null);
+                                }
+                                return Mono.empty();
+                            }));
                 }));
     }
 

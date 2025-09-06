@@ -5,6 +5,7 @@ import reactor.core.publisher.Mono;
 
 public interface SettingConfigGetter {
     Mono<BasicConfig> getBasicConfig();
+    Mono<AdvancedConfig> getAdvancedConfig();
 
     @Data
     class BasicConfig {
@@ -33,5 +34,19 @@ public interface SettingConfigGetter {
         private String imageQuality;
         private int maxImageWidth;
         private int maxImageHeight;
+    }
+
+    @Data
+    class AdvancedConfig {
+        public static final String GROUP = "advanced";
+        private boolean enableAutoPush;
+        private boolean autoPushOnPublish;
+        private boolean enableGooglePush;
+        private String googleApiKey;
+        private boolean enableBingPush;
+        private String bingApiKey;
+        private boolean enableBaiduPush;
+        private String baiduApiKey;
+        private String siteUrl;
     }
 }
