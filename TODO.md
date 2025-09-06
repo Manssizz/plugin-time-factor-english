@@ -18,6 +18,7 @@
 - [x] Integrate auto push with content publishing in TimeFactorProcess.java
 - [x] Create SearchEnginePushController.java for manual triggering
 - [x] Add API key configuration for each search engine
+- [x] Create separate "Webmaster Tools" settings group
 
 ---
 

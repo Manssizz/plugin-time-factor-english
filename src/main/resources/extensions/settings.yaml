@@ -244,6 +244,9 @@ spec:
             - label: "Disabled"
               value: "disabled"
           help: "How to detect content types for structured data"
+    - group: webmaster
+      label: "Webmaster Tools"
+      formSchema:
         - $formkit: checkbox
           label: "Enable Auto Push to Search Engines"
           name: enableAutoPush
@@ -258,6 +261,12 @@ spec:
           key: autoPushOnPublish
           value: true
           help: "Automatically push new content to search engines when published"
+        - $formkit: text
+          label: "Site URL"
+          name: siteUrl
+          id: siteUrl
+          key: siteUrl
+          help: "Your website URL for search engine submissions"
         - $formkit: checkbox
           label: "Enable Google Webmaster Push"
           name: enableGooglePush
