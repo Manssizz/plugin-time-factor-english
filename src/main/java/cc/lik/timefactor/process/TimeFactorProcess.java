@@ -2,6 +2,7 @@ package cc.lik.timefactor.process;
 
 import cc.lik.timefactor.service.SettingConfigGetter;
 import cc.lik.timefactor.service.ImageOptimizationService;
+import cc.lik.timefactor.service.SearchEnginePushService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -56,6 +57,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     private final ExternalLinkProcessor externalLinkProcessor;
     private final SystemInfoGetter systemInfoGetter;
     private final ImageOptimizationService imageOptimizationService;
+    private final SearchEnginePushService searchEnginePushService;
 
     @Override
     public Mono<Void> process(ITemplateContext context, IModel model, IElementModelStructureHandler handler) {
@@ -71,7 +73,16 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
 
         return client.fetch(Post.class, postName)
             .flatMap(post -> buildSeoData(post)
-                .flatMap(seoData -> generateSeoTags(seoData, model, modelFactory)));
+                .flatMap(seoData -> {
+                    // Generate SEO tags
+                    return generateSeoTags(seoData, model, modelFactory)
+                        // After generating SEO tags, push URLs to search engines if enabled
+                        .then(Mono.fromRunnable(() -> {
+                            if (settingConfigGetter.getSetting("autoPushOnPublish", Boolean.class, true)) {
+                                searchEnginePushService.pushToSearchEngines(seoData.postUrl(), null);
+                            }
+                        }));
+                }));
     }
 
     private Mono<SeoData> buildSeoData(Post post) {
