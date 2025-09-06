@@ -245,7 +245,7 @@ spec:
               value: "disabled"
           help: "How to detect content types for structured data"
     - group: webmaster
-      label: "Webmaster Tools"
+      label: "Webmaster SEO Settings"
       formSchema:
         - $formkit: checkbox
           label: "Enable Auto Push to Search Engines"
