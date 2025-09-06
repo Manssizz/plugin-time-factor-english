@@ -5,7 +5,7 @@ metadata:
 spec:
   forms:
     - group: basic
-      label: "Basic Settings"
+      label: "Basic SEO Settings"
       formSchema:
         - $el: a
           attrs:
@@ -72,19 +72,6 @@ spec:
           value: true
           help: "Add canonical URL meta tag to prevent duplicate content issues"
         - $formkit: checkbox
-          label: "Enable Twitter Card"
-          name: enableTwitterCard
-          id: enableTwitterCard
-          key: enableTwitterCard
-          value: true
-          help: "Add Twitter Card meta tags for better social media sharing"
-        - $formkit: attachment
-          label: "Default Cover Image"
-          name: defaultImage
-          id: defaultImage
-          key: defaultImage
-          help: "Used when no cover image is set"
-        - $formkit: checkbox
           label: "Enable Meta Robots"
           name: enableMetaRobots
           id: enableMetaRobots
@@ -115,34 +102,16 @@ spec:
             - label: "No Follow (don't follow links)"
               value: "nofollow"
           help: "Control whether search engines should follow links on this page"
+    - group: social
+      label: "Social Media SEO Settings"
+      formSchema:
         - $formkit: checkbox
-          label: "Enable FAQ Schema"
-          name: enableFAQSchema
-          id: enableFAQSchema
-          key: enableFAQSchema
+          label: "Enable Twitter Card"
+          name: enableTwitterCard
+          id: enableTwitterCard
+          key: enableTwitterCard
           value: true
-          help: "Generate FAQ structured data for Q&A content"
-        - $formkit: checkbox
-          label: "Enable How-To Schema"
-          name: enableHowToSchema
-          id: enableHowToSchema
-          key: enableHowToSchema
-          value: true
-          help: "Generate How-To structured data for tutorial/guide content"
-        - $formkit: combobox
-          label: "Content Type Detection"
-          name: contentTypeDetection
-          id: contentTypeDetection
-          key: contentTypeDetection
-          value: "auto"
-          options:
-            - label: "Auto-detect"
-              value: "auto"
-            - label: "Manual override"
-              value: "manual"
-            - label: "Disabled"
-              value: "disabled"
-          help: "How to detect content types for structured data"
+          help: "Add Twitter Card meta tags for better social media sharing"
         - $formkit: checkbox
           label: "Enable Enhanced Social Media"
           name: enableEnhancedSocial
@@ -178,3 +147,100 @@ spec:
             - label: "Disabled"
               value: "disabled"
           help: "Optimize images for social media platforms"
+    - group: advanced
+      label: "Advanced SEO Settings"
+      formSchema:
+        - $formkit: checkbox
+          label: "Enable FAQ Schema"
+          name: enableFAQSchema
+          id: enableFAQSchema
+          key: enableFAQSchema
+          value: true
+          help: "Generate FAQ structured data for Q&A content"
+        - $formkit: checkbox
+          label: "Enable How-To Schema"
+          name: enableHowToSchema
+          id: enableHowToSchema
+          key: enableHowToSchema
+          value: true
+          help: "Generate How-To structured data for tutorial/guide content"
+        - $formkit: checkbox
+          label: "Enable Auto Alt Text Generation"
+          name: enableAutoAltText
+          id: enableAutoAltText
+          key: enableAutoAltText
+          value: true
+          help: "Automatically generate alt text for images using AI/image analysis"
+        - $formkit: checkbox
+          label: "Enable Image Filename Optimization"
+          name: enableImageFilenameOptimization
+          id: enableImageFilenameOptimization
+          key: enableImageFilenameOptimization
+          value: true
+          help: "Optimize image file names for better SEO"
+        - $formkit: checkbox
+          label: "Enable Dynamic OG Images"
+          name: enableDynamicOGImages
+          id: enableDynamicOGImages
+          key: enableDynamicOGImages
+          value: false
+          help: "Generate dynamic Open Graph images for better social sharing"
+        - $formkit: checkbox
+          label: "Enable Lazy Loading"
+          name: enableLazyLoading
+          id: enableLazyLoading
+          key: enableLazyLoading
+          value: true
+          help: "Implement lazy loading for images to improve page performance"
+        - $formkit: select
+          label: "Image Quality"
+          name: imageQuality
+          id: imageQuality
+          key: imageQuality
+          value: "high"
+          options:
+            - label: "High (Best quality)"
+              value: "high"
+            - label: "Medium (Balanced)"
+              value: "medium"
+            - label: "Low (Smaller files)"
+              value: "low"
+          help: "Set the quality level for image optimization"
+        - $formkit: number
+          label: "Max Image Width (px)"
+          name: maxImageWidth
+          id: maxImageWidth
+          key: maxImageWidth
+          value: 1920
+          min: 800
+          max: 4096
+          help: "Maximum width for optimized images"
+        - $formkit: number
+          label: "Max Image Height (px)"
+          name: maxImageHeight
+          id: maxImageHeight
+          key: maxImageHeight
+          value: 1080
+          min: 600
+          max: 2160
+          help: "Maximum height for optimized images"
+        - $formkit: attachment
+          label: "Default Cover Image"
+          name: defaultImage
+          id: defaultImage
+          key: defaultImage
+          help: "Used when no cover image is set"
+        - $formkit: combobox
+          label: "Content Type Detection"
+          name: contentTypeDetection
+          id: contentTypeDetection
+          key: contentTypeDetection
+          value: "auto"
+          options:
+            - label: "Auto-detect"
+              value: "auto"
+            - label: "Manual override"
+              value: "manual"
+            - label: "Disabled"
+              value: "disabled"
+          help: "How to detect content types for structured data"

@@ -26,5 +26,12 @@ public interface SettingConfigGetter {
         private boolean enableFacebookTags;
         private String socialImageOptimization;
         private String defaultImage;
+        private boolean enableAutoAltText;
+        private boolean enableImageFilenameOptimization;
+        private boolean enableDynamicOGImages;
+        private boolean enableLazyLoading;
+        private String imageQuality;
+        private int maxImageWidth;
+        private int maxImageHeight;
     }
 }

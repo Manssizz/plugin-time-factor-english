@@ -1,6 +1,7 @@
 package cc.lik.timefactor.process;
 
 import cc.lik.timefactor.service.SettingConfigGetter;
+import cc.lik.timefactor.service.ImageOptimizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -54,6 +55,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     private final SettingConfigGetter settingConfigGetter;
     private final ExternalLinkProcessor externalLinkProcessor;
     private final SystemInfoGetter systemInfoGetter;
+    private final ImageOptimizationService imageOptimizationService;
 
     @Override
     public Mono<Void> process(ITemplateContext context, IModel model, IElementModelStructureHandler handler) {
