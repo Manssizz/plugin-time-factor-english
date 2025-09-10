@@ -79,9 +79,13 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     return generateSeoTags(seoData, model, modelFactory)
                         // After generating SEO tags, push URLs to search engines if enabled
                         .then(settingConfigGetter.getAdvancedConfig()
+                            .doOnNext(config -> {
+                                System.out.println("DEBUG: Auto push config - enableAutoPush: " + config.isEnableAutoPush() +
+                                    ", autoPushOnPublish: " + config.isAutoPushOnPublish());
+                            })
                             .flatMap(config -> {
                                 if (config.isAutoPushOnPublish()) {
-                                    return searchEnginePushService.pushToSearchEngines(seoData.postUrl(), null);
+                                    return searchEnginePushService.pushToSearchEngines(seoData.postUrl(), config.getSitemapUrl());
                                 }
                                 return Mono.empty();
                             }));
@@ -435,6 +439,10 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             lowerContent.contains("cara") ||
             lowerContent.contains("panduan") ||
             lowerContent.contains("langkah") ||
+            lowerContent.contains("mengatasi") ||
+            lowerContent.contains("tshoot") ||
+            lowerContent.contains("t-shoot") ||
+            lowerContent.contains("dari") ||
             lowerContent.contains("bagaimana")) {
             return "howto";
         }

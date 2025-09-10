@@ -27,6 +27,8 @@ public class SearchEnginePushService {
     public Mono<Void> pushToSearchEngines(String url, String sitemapUrl) {
         return settingConfigGetter.getAdvancedConfig()
             .doOnNext(config -> {
+                logger.debug("Auto push config: enableAutoPush={}, enableGooglePush={}, enableBingPush={}, enableBaiduPush={}",
+                    config.isEnableAutoPush(), config.isEnableGooglePush(), config.isEnableBingPush(), config.isEnableBaiduPush());
                 if (!config.isEnableAutoPush()) {
                     logger.info("Auto push to search engines is disabled");
                     return;

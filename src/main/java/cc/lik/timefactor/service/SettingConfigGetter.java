@@ -49,6 +49,7 @@ public interface SettingConfigGetter {
         private boolean enableBaiduPush;
         private String baiduApiKey;
         private String siteUrl;
+        private String sitemapUrl;
     }
 
     @Data
