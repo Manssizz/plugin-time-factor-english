@@ -1,6 +1,12 @@
 name: Workflow Builder and Upload
 
 on:
+  push:
+    branches:
+      - *
+  pull_request:
+    branches:
+      - *
   workflow_dispatch:
     inputs:
       version:

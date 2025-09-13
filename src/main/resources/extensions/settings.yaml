@@ -133,6 +133,20 @@ spec:
           key: enableFacebookTags
           value: true
           help: "Add Facebook-specific meta tags for social sharing"
+        - $formkit: checkbox
+          label: "Enable Facebook App ID"
+          name: enableFacebookAppId
+          id: enableFacebookAppId
+          key: enableFacebookAppId
+          value: false
+          help: "Enable Facebook App ID for enhanced Facebook sharing"
+        - $formkit: textarea
+          if: "$get(enableFacebookAppId).value"
+          label: "Facebook App ID"
+          name: fbAppId
+          id: fbAppId
+          key: fbAppId
+          help: "Your Facebook App ID for Facebook sharing integration"
         - $formkit: select
           label: "Social Image Optimization"
           name: socialImageOptimization

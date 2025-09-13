@@ -26,6 +26,8 @@ public interface SettingConfigGetter {
         private boolean enableEnhancedSocial;
         private boolean enableLinkedInTags;
         private boolean enableFacebookTags;
+        private boolean enableFacebookAppId;
+        private String fbAppId;
         private String socialImageOptimization;
         private String defaultImage;
         private boolean enableAutoAltText;

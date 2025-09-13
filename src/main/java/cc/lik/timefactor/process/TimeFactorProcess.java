@@ -557,7 +557,8 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     private String genEnhancedOGTags(SeoData seoData) {
         return """
             <meta property="og:site_name" content="%s"/>
-            <meta property="og:locale" content="en_US"/>
+            // <meta property="og:locale" content="en_US"/>
+            <meta property="og:locale" content="id_ID"/>
             <meta property="og:image:width" content="1200"/>
             <meta property="og:image:height" content="630"/>
             <meta property="og:image:alt" content="%s"/>
@@ -584,19 +585,39 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     }
 
     private String genFacebookTags(SeoData seoData) {
-        return """
-            <meta property="fb:app_id" content=""/>
-            <meta property="og:title" content="%s"/>
-            <meta property="og:description" content="%s"/>
-            <meta property="og:image" content="%s"/>
-            <meta property="og:url" content="%s"/>
-            <meta property="og:type" content="article"/>
-            <meta property="article:author" content="%s"/>
-            <meta property="article:published_time" content="%s"/>
-            """.formatted(
-                seoData.title(), seoData.description(), seoData.coverUrl(),
-                seoData.postUrl(), seoData.author(), seoData.googlePubDate()
-            );
+        return settingConfigGetter.getBasicConfig()
+            .map(config -> {
+                if (config.isEnableFacebookAppId() && config.getFbAppId() != null && !config.getFbAppId().isEmpty()) {
+                    return """
+                        <meta property="fb:app_id" content="%s"/>
+                        <meta property="og:title" content="%s"/>
+                        <meta property="og:description" content="%s"/>
+                        <meta property="og:image" content="%s"/>
+                        <meta property="og:url" content="%s"/>
+                        <meta property="og:type" content="article"/>
+                        <meta property="article:author" content="%s"/>
+                        <meta property="article:published_time" content="%s"/>
+                        """.formatted(
+                            config.getFbAppId(),
+                            seoData.title(), seoData.description(), seoData.coverUrl(),
+                            seoData.postUrl(), seoData.author(), seoData.googlePubDate()
+                        );
+                } else {
+                    return """
+                        <meta property="og:title" content="%s"/>
+                        <meta property="og:description" content="%s"/>
+                        <meta property="og:image" content="%s"/>
+                        <meta property="og:url" content="%s"/>
+                        <meta property="og:type" content="article"/>
+                        <meta property="article:author" content="%s"/>
+                        <meta property="article:published_time" content="%s"/>
+                        """.formatted(
+                            seoData.title(), seoData.description(), seoData.coverUrl(),
+                            seoData.postUrl(), seoData.author(), seoData.googlePubDate()
+                        );
+                }
+            })
+            .block();
     }
 
     private record QuestionAnswer(String question, String answer) {}
