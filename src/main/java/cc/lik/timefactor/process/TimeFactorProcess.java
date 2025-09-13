@@ -172,41 +172,23 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 }
                 if (config.isEnableCanonicalTag()) {
                     sb.append(genCanonicalTag(seoData.postUrl()));
-                    sb.append("<!-- DEBUG: Canonical tag generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Canonical tag disabled -->\n");
                 }
                 if (config.isEnableTwitterCard()) {
                     sb.append(genTwitterCard(seoData));
-                    sb.append("<!-- DEBUG: Twitter Card generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Twitter Card disabled -->\n");
                 }
                 if (config.isEnableMetaRobots()) {
                     sb.append(genMetaRobots(config.getRobotsIndex(), config.getRobotsFollow()));
-                    sb.append("<!-- DEBUG: Meta Robots generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Meta Robots disabled -->\n");
                 }
 
                 // Enhanced Social Media Optimization
                 if (config.isEnableEnhancedSocial()) {
                     sb.append(genEnhancedOGTags(seoData));
-                    sb.append("<!-- DEBUG: Enhanced Social Media tags generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Enhanced Social Media tags disabled -->\n");
                 }
                 if (config.isEnableLinkedInTags()) {
                     sb.append(genLinkedInTags(seoData));
-                    sb.append("<!-- DEBUG: LinkedIn tags generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: LinkedIn tags disabled -->\n");
                 }
                 if (config.isEnableFacebookTags()) {
                     sb.append(genFacebookTags(seoData));
-                    sb.append("<!-- DEBUG: Facebook tags generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Facebook tags disabled -->\n");
                 }
 
                 // Enhanced Structured Data
@@ -214,19 +196,14 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     var contentType = detectContentType(seoData.content(), config.getContentTypeDetection());
                     if ("faq".equals(contentType) && config.isEnableFAQSchema()) {
                         sb.append(genFAQSchema(seoData));
-                        sb.append("<!-- DEBUG: FAQ Schema generated -->\n");
                     } else if ("howto".equals(contentType) && config.isEnableHowToSchema()) {
                         sb.append(genHowToSchema(seoData));
-                        sb.append("<!-- DEBUG: How-To Schema generated -->\n");
                     }
                 }
 
                 // Breadcrumb Schema
                 if (advancedConfig.isEnableBreadcrumb()) {
                     sb.append(genBreadcrumbSchema(seoData, advancedConfig.getSiteUrl()));
-                    sb.append("<!-- DEBUG: Breadcrumb Schema generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Breadcrumb Schema disabled -->\n");
                 }
 
                 model.add(modelFactory.createText(sb.toString()));
@@ -453,6 +430,8 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             lowerContent.contains("tshoot") ||
             lowerContent.contains("t-shoot") ||
             lowerContent.contains("dari") ||
+            lowerContent.contains("openwrt") ||
+            lowerContent.contains("openclash") ||
             lowerContent.contains("bagaimana")) {
             return "howto";
         }
@@ -556,6 +535,10 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             var trimmed = line.trim();
             if (trimmed.matches("\\d+\\..*") || // 1. Step text
                 trimmed.toLowerCase().startsWith("step") ||
+                trimmed.toLowerCase().startsWith("cara") ||
+                trimmed.toLowerCase().startsWith("bagaimana") ||
+                trimmed.toLowerCase().startsWith("openwrt") ||
+                trimmed.toLowerCase().startsWith("openclash") ||
                 trimmed.toLowerCase().startsWith("langkah")) {
                 steps.add(trimmed);
             }
