@@ -151,10 +151,12 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     }
 
     private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
-        return settingConfigGetter.getBasicConfig()
-            .map(config -> {
+        return Mono.zip(settingConfigGetter.getBasicConfig(), settingConfigGetter.getAdvancedConfig())
+            .map(tuple -> {
+                var config = tuple.getT1();
+                var advancedConfig = tuple.getT2();
                 var sb = new StringBuilder();
-                
+
                 // 使用if-else简化配置检查
                 if (config.isEnableOGTimeFactor()) {
                     sb.append(genOGMeta(seoData));
@@ -218,7 +220,15 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                         sb.append("<!-- DEBUG: How-To Schema generated -->\n");
                     }
                 }
-                
+
+                // Breadcrumb Schema
+                if (advancedConfig.isEnableBreadcrumb()) {
+                    sb.append(genBreadcrumbSchema(seoData, advancedConfig.getSiteUrl()));
+                    sb.append("<!-- DEBUG: Breadcrumb Schema generated -->\n");
+                } else {
+                    sb.append("<!-- DEBUG: Breadcrumb Schema disabled -->\n");
+                }
+
                 model.add(modelFactory.createText(sb.toString()));
                 return Mono.<Void>empty();
             })
@@ -618,6 +628,77 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 }
             })
             .block();
+    }
+
+    private String genBreadcrumbSchema(SeoData seoData, String siteUrl) {
+        // Generate a simple BreadcrumbList JSON-LD based on the post URL structure
+        // Example: Home > Category > Post Title
+        var url = seoData.postUrl();
+        var title = seoData.title();
+
+        // Extract path segments from URL after siteUrl
+        var breadcrumbItems = new ArrayList<String>();
+        if (siteUrl != null && !siteUrl.isEmpty() && url.startsWith(siteUrl)) {
+            var path = url.substring(siteUrl.length());
+            var segments = path.split("/");
+            var accumulatedUrl = siteUrl.endsWith("/") ? siteUrl.substring(0, siteUrl.length() - 1) : siteUrl;
+            int position = 1;
+
+            // Add Home breadcrumb
+            breadcrumbItems.add("""
+                {
+                  "@type": "ListItem",
+                  "position": %d,
+                  "name": "Home",
+                  "item": "%s"
+                }
+                """.formatted(position++, siteUrl));
+
+            for (var segment : segments) {
+                if (segment.isBlank()) continue;
+                accumulatedUrl += "/" + segment;
+                var name = segment.replaceAll("[-_]", " ");
+                name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+                breadcrumbItems.add("""
+                    {
+                      "@type": "ListItem",
+                      "position": %d,
+                      "name": "%s",
+                      "item": "%s"
+                    }
+                    """.formatted(position++, name, accumulatedUrl));
+            }
+        } else {
+            // Fallback: just Home and current page
+            breadcrumbItems.add("""
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "%s"
+                }
+                """.formatted(siteUrl != null ? siteUrl : "/"));
+            breadcrumbItems.add("""
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "%s",
+                  "item": "%s"
+                }
+                """.formatted(title, url));
+        }
+
+        var breadcrumbList = String.join(",", breadcrumbItems);
+
+        return """
+            <script type="application/ld+json">
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [%s]
+            }
+            </script>
+            """.formatted(breadcrumbList);
     }
 
     private record QuestionAnswer(String question, String answer) {}

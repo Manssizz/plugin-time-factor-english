@@ -1,11 +1,9 @@
-# TODO: Add fb:app_id Support
+# TODO: Add Breadcrumb Support in Advanced SEO
 
-## Tasks
-- [x] Update SettingConfigGetter.java to add enableFacebookAppId boolean and fbAppId string fields to BasicConfig
-- [x] Update settings.yaml to add "Enable Facebook App ID" checkbox in social group
-- [x] Update settings.yaml to add "Facebook App ID" textarea with conditional display (if enableFacebookAppId)
-- [x] Update TimeFactorProcess.java genFacebookTags method to conditionally add fb:app_id meta tag using config
-
-## Followup
-- [ ] Test settings UI for show/hide functionality
-- [ ] Verify meta tag generation
+## Pending Tasks
+- [x] Add enableBreadcrumb checkbox to settings.yaml in advanced group
+- [x] Add enableBreadcrumb field to AdvancedConfig in SettingConfigGetter.java
+- [x] Modify generateSeoTags in TimeFactorProcess.java to get advanced config
+- [x] Add genBreadcrumbSchema method in TimeFactorProcess.java
+- [x] Call genBreadcrumbSchema conditionally in generateSeoTags
+- [ ] Test the breadcrumb schema output (user will build and test)

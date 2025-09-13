@@ -172,6 +172,13 @@ spec:
           value: false
           help: "Automatically submit sitemaps and URLs to search engines via API"
         - $formkit: checkbox
+          label: "Enable Breadcrumb"
+          name: enableBreadcrumb
+          id: enableBreadcrumb
+          key: enableBreadcrumb
+          value: false
+          help: "Enable Breadcrumb structured data for better SEO"
+        - $formkit: checkbox
           label: "Auto Push on Content Publish"
           name: autoPushOnPublish
           id: autoPushOnPublish

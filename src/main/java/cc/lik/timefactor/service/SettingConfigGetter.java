@@ -52,6 +52,7 @@ public interface SettingConfigGetter {
         private String baiduApiKey;
         private String siteUrl;
         private String sitemapUrl;
+        private boolean enableBreadcrumb;
     }
 
     @Data
