@@ -19,9 +19,21 @@ public class SettingConfigGetterImpl implements SettingConfigGetter {
     }
 
     @Override
+    public Mono<SocialConfig> getSocialConfig() {
+        return settingFetcher.fetch(SocialConfig.GROUP, SocialConfig.class)
+            .defaultIfEmpty(new SocialConfig());
+    }
+
+    @Override
     public Mono<AdvancedConfig> getAdvancedConfig() {
         return settingFetcher.fetch(AdvancedConfig.GROUP, AdvancedConfig.class)
             .defaultIfEmpty(new AdvancedConfig());
+    }
+
+    @Override
+    public Mono<WebmasterConfig> getWebmasterConfig() {
+        return settingFetcher.fetch(WebmasterConfig.GROUP, WebmasterConfig.class)
+            .defaultIfEmpty(new WebmasterConfig());
     }
 
     @Override

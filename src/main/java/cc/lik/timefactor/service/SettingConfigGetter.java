@@ -5,7 +5,9 @@ import reactor.core.publisher.Mono;
 
 public interface SettingConfigGetter {
     Mono<BasicConfig> getBasicConfig();
+    Mono<SocialConfig> getSocialConfig();
     Mono<AdvancedConfig> getAdvancedConfig();
+    Mono<WebmasterConfig> getWebmasterConfig();
     Mono<AnalyticsConfig> getAnalyticsConfig();
 
     @Data
@@ -16,18 +18,28 @@ public interface SettingConfigGetter {
         private boolean enableMetaTimeFactor;
         private boolean enableStructuredData;
         private boolean enableCanonicalTag;
-        private boolean enableTwitterCard;
         private boolean enableMetaRobots;
         private String robotsIndex;
         private String robotsFollow;
-        private boolean enableFAQSchema;
-        private boolean enableHowToSchema;
-        private String contentTypeDetection;
+    }
+
+    @Data
+    class SocialConfig {
+        public static final String GROUP = "social";
+        private boolean enableTwitterCard;
         private boolean enableEnhancedSocial;
         private boolean enableLinkedInTags;
         private boolean enableFacebookTags;
+        private String facebookAppId;
         private String socialImageOptimization;
-        private String defaultImage;
+    }
+
+    @Data
+    class AdvancedConfig {
+        public static final String GROUP = "advanced";
+        private boolean enableFAQSchema;
+        private boolean enableHowToSchema;
+        private String contentTypeDetection;
         private boolean enableAutoAltText;
         private boolean enableImageFilenameOptimization;
         private boolean enableDynamicOGImages;
@@ -35,21 +47,22 @@ public interface SettingConfigGetter {
         private String imageQuality;
         private int maxImageWidth;
         private int maxImageHeight;
+        private String defaultImage;
     }
 
     @Data
-    class AdvancedConfig {
-        public static final String GROUP = "advanced";
+    class WebmasterConfig {
+        public static final String GROUP = "webmaster";
         private boolean enableAutoPush;
         private boolean autoPushOnPublish;
+        private String siteUrl;
+        private String sitemapUrl;
         private boolean enableGooglePush;
         private String googleApiKey;
         private boolean enableBingPush;
         private String bingApiKey;
         private boolean enableBaiduPush;
         private String baiduApiKey;
-        private String siteUrl;
-        private String sitemapUrl;
     }
 
     @Data

@@ -133,6 +133,13 @@ spec:
           key: enableFacebookTags
           value: true
           help: "Add Facebook-specific meta tags for social sharing"
+        - $formkit: textarea
+          label: "Facebook App ID"
+          name: facebookAppId
+          id: facebookAppId
+          key: facebookAppId
+          help: "Your Facebook App ID for social sharing"
+          if: "model.enableFacebookTags"
         - $formkit: select
           label: "Social Image Optimization"
           name: socialImageOptimization
@@ -150,72 +157,6 @@ spec:
     - group: advanced
       label: "Advanced SEO Settings"
       formSchema:
-        - $formkit: checkbox
-          label: "Enable Auto Push to Search Engines"
-          name: enableAutoPush
-          id: enableAutoPush
-          key: enableAutoPush
-          value: false
-          help: "Automatically submit sitemaps and URLs to search engines via API"
-        - $formkit: checkbox
-          label: "Auto Push on Content Publish"
-          name: autoPushOnPublish
-          id: autoPushOnPublish
-          key: autoPushOnPublish
-          value: true
-          help: "Automatically push new content to search engines when published"
-        - $formkit: text
-          label: "Site URL"
-          name: siteUrl
-          id: siteUrl
-          key: siteUrl
-          help: "Your website URL for search engine submissions"
-        - $formkit: text
-          label: "Sitemap URL"
-          name: sitemapUrl
-          id: sitemapUrl
-          key: sitemapUrl
-          value: "/sitemap.xml"
-          help: "Your sitemap URL for search engine submissions (e.g., /sitemap.xml)"
-        - $formkit: checkbox
-          label: "Enable Google Webmaster Push"
-          name: enableGooglePush
-          id: enableGooglePush
-          key: enableGooglePush
-          value: false
-          help: "Submit sitemaps and URLs to Google Search Console"
-        - $formkit: text
-          label: "Google Webmaster API Key"
-          name: googleApiKey
-          id: googleApiKey
-          key: googleApiKey
-          help: "API key for Google Search Console integration"
-        - $formkit: checkbox
-          label: "Enable Bing Webmaster Push"
-          name: enableBingPush
-          id: enableBingPush
-          key: enableBingPush
-          value: false
-          help: "Submit sitemaps and URLs to Bing Webmaster Tools"
-        - $formkit: text
-          label: "Bing Webmaster API Key"
-          name: bingApiKey
-          id: bingApiKey
-          key: bingApiKey
-          help: "API key for Bing Webmaster Tools integration"
-        - $formkit: checkbox
-          label: "Enable Baidu Webmaster Push"
-          name: enableBaiduPush
-          id: enableBaiduPush
-          key: enableBaiduPush
-          value: false
-          help: "Submit sitemaps and URLs to Baidu Webmaster Tools"
-        - $formkit: text
-          label: "Baidu Webmaster API Key"
-          name: baiduApiKey
-          id: baiduApiKey
-          key: baiduApiKey
-          help: "API key for Baidu Webmaster Tools integration"
         - $formkit: checkbox
           label: "Enable FAQ Schema"
           name: enableFAQSchema
@@ -311,6 +252,76 @@ spec:
               value: "disabled"
           help: "How to detect content types for structured data"
 
+    - group: webmaster
+      label: "Webmaster SEO Settings"
+      formSchema:
+        - $formkit: checkbox
+          label: "Enable Auto Push to Search Engines"
+          name: enableAutoPush
+          id: enableAutoPush
+          key: enableAutoPush
+          value: false
+          help: "Automatically submit sitemaps and URLs to search engines via API"
+        - $formkit: checkbox
+          label: "Auto Push on Content Publish"
+          name: autoPushOnPublish
+          id: autoPushOnPublish
+          key: autoPushOnPublish
+          value: true
+          help: "Automatically push new content to search engines when published"
+        - $formkit: text
+          label: "Site URL"
+          name: siteUrl
+          id: siteUrl
+          key: siteUrl
+          help: "Your website URL for search engine submissions"
+        - $formkit: text
+          label: "Sitemap URL"
+          name: sitemapUrl
+          id: sitemapUrl
+          key: sitemapUrl
+          value: "/sitemap.xml"
+          help: "Your sitemap URL for search engine submissions (e.g., /sitemap.xml)"
+        - $formkit: checkbox
+          label: "Enable Google Webmaster Push"
+          name: enableGooglePush
+          id: enableGooglePush
+          key: enableGooglePush
+          value: false
+          help: "Submit sitemaps and URLs to Google Search Console"
+        - $formkit: text
+          label: "Google Webmaster API Key"
+          name: googleApiKey
+          id: googleApiKey
+          key: googleApiKey
+          help: "API key for Google Search Console integration"
+        - $formkit: checkbox
+          label: "Enable Bing Webmaster Push"
+          name: enableBingPush
+          id: enableBingPush
+          key: enableBingPush
+          value: false
+          help: "Submit sitemaps and URLs to Bing Webmaster Tools"
+        - $formkit: text
+          label: "Bing Webmaster API Key"
+          name: bingApiKey
+          id: bingApiKey
+          key: bingApiKey
+          help: "API key for Bing Webmaster Tools integration"
+        - $formkit: checkbox
+          label: "Enable Baidu Webmaster Push"
+          name: enableBaiduPush
+          id: enableBaiduPush
+          key: enableBaiduPush
+          value: false
+          help: "Submit sitemaps and URLs to Baidu Webmaster Tools"
+        - $formkit: text
+          label: "Baidu Webmaster API Key"
+          name: baiduApiKey
+          id: baiduApiKey
+          key: baiduApiKey
+          help: "API key for Baidu Webmaster Tools integration"
+          
     - group: analytics
       label: "Analytics Integration"
       formSchema:

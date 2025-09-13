@@ -76,9 +76,9 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             .flatMap(post -> buildSeoData(post)
                 .flatMap(seoData -> {
                     // Generate SEO tags
-                    return generateSeoTags(seoData, model, modelFactory)
+                    return generateSeoTags(seoData, basicConfig, socialConfig, advancedConfig, model, modelFactory)
                         // After generating SEO tags, push URLs to search engines if enabled
-                        .then(settingConfigGetter.getAdvancedConfig()
+                        .then(settingConfigGetter.getWebmasterConfig()
                             .doOnNext(config -> {
                                 System.out.println("DEBUG: Auto push config - enableAutoPush: " + config.isEnableAutoPush() +
                                     ", autoPushOnPublish: " + config.isAutoPushOnPublish());
@@ -97,12 +97,16 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             client.fetch(User.class, post.getSpec().getOwner()),
             findTag(post),
             settingConfigGetter.getBasicConfig(),
+            settingConfigGetter.getSocialConfig(),
+            settingConfigGetter.getAdvancedConfig(),
             systemInfoGetter.get()
         ).map(tuple -> {
             var user = tuple.getT1();
             var keywords = tuple.getT2();
-            var config = tuple.getT3();
-            var systemInfo = tuple.getT4();
+            var basicConfig = tuple.getT3();
+            var socialConfig = tuple.getT4();
+            var advancedConfig = tuple.getT5();
+            var systemInfo = tuple.getT6();
             
             var author = Optional.of(user)
                 .map(User::getSpec)
@@ -118,7 +122,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             var coverUrl = externalLinkProcessor.processLink(
                 Optional.ofNullable(post.getSpec().getCover())
                     .filter(cover -> !cover.isBlank())
-                    .orElse(config.getDefaultImage())
+                    .orElse(advancedConfig.getDefaultImage())
             );
             
             var publishInstant = post.getSpec().getPublishTime();
@@ -150,8 +154,8 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         });
     }
 
-    private Mono<Void> generateSeoTags(SeoData seoData, IModel model, IModelFactory modelFactory) {
-        return settingConfigGetter.getBasicConfig()
+    private Mono<Void> generateSeoTags(SeoData seoData, BasicConfig basicConfig, SocialConfig socialConfig, AdvancedConfig advancedConfig, IModel model, IModelFactory modelFactory) {
+        return Mono.just(basicConfig)
             .map(config -> {
                 var sb = new StringBuilder();
                 
@@ -170,41 +174,23 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                 }
                 if (config.isEnableCanonicalTag()) {
                     sb.append(genCanonicalTag(seoData.postUrl()));
-                    sb.append("<!-- DEBUG: Canonical tag generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Canonical tag disabled -->\n");
                 }
                 if (config.isEnableTwitterCard()) {
                     sb.append(genTwitterCard(seoData));
-                    sb.append("<!-- DEBUG: Twitter Card generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Twitter Card disabled -->\n");
                 }
                 if (config.isEnableMetaRobots()) {
                     sb.append(genMetaRobots(config.getRobotsIndex(), config.getRobotsFollow()));
-                    sb.append("<!-- DEBUG: Meta Robots generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Meta Robots disabled -->\n");
                 }
 
                 // Enhanced Social Media Optimization
                 if (config.isEnableEnhancedSocial()) {
                     sb.append(genEnhancedOGTags(seoData));
-                    sb.append("<!-- DEBUG: Enhanced Social Media tags generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Enhanced Social Media tags disabled -->\n");
                 }
                 if (config.isEnableLinkedInTags()) {
                     sb.append(genLinkedInTags(seoData));
-                    sb.append("<!-- DEBUG: LinkedIn tags generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: LinkedIn tags disabled -->\n");
                 }
                 if (config.isEnableFacebookTags()) {
-                    sb.append(genFacebookTags(seoData));
-                    sb.append("<!-- DEBUG: Facebook tags generated -->\n");
-                } else {
-                    sb.append("<!-- DEBUG: Facebook tags disabled -->\n");
+                    sb.append(genFacebookTags(seoData, config.getFacebookAppId()));
                 }
 
                 // Enhanced Structured Data
@@ -583,9 +569,11 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             );
     }
 
-    private String genFacebookTags(SeoData seoData) {
-        return """
-            <meta property="fb:app_id" content=""/>
+    private String genFacebookTags(SeoData seoData, String facebookAppId) {
+        var fbAppIdTag = facebookAppId != null && !facebookAppId.isBlank()
+            ? "<meta property=\"fb:app_id\" content=\"" + facebookAppId + "\"/>\n"
+            : "";
+        return fbAppIdTag + """
             <meta property="og:title" content="%s"/>
             <meta property="og:description" content="%s"/>
             <meta property="og:image" content="%s"/>
