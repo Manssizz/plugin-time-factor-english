@@ -1,16 +1,12 @@
 name: Workflow Builder and Upload
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to build and upload'
-        required: false
-        default: 'latest'
-      upload_target:
-        description: 'Upload target (e.g., github, appstore)'
-        required: false
-        default: 'github'
+  push:
+    branches:
+      - revert
+  pull_request:
+    branches:
+      - revert
 
 jobs:
   build:
