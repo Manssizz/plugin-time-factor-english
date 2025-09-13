@@ -550,7 +550,6 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
     private String genEnhancedOGTags(SeoData seoData) {
         return """
             <meta property="og:site_name" content="%s"/>
-            // <meta property="og:locale" content="en_US"/>
             <meta property="og:locale" content="id_ID"/>
             <meta property="og:image:width" content="1200"/>
             <meta property="og:image:height" content="630"/>
