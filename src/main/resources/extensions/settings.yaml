@@ -322,7 +322,7 @@ spec:
           name: enableFetchPriorityHigh
           id: enableFetchPriorityHigh
           key: enableFetchPriorityHigh
-          value: false
+          value: true
           help: "Enable fetchpriority='high' attribute for cover image preload links"
         - $formkit: combobox
           label: "Content Type Detection"
