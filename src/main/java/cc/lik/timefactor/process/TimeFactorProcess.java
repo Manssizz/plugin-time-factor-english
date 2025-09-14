@@ -206,6 +206,11 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     sb.append(genBreadcrumbSchema(seoData, advancedConfig.getSiteUrl()));
                 }
 
+                // Add preload link for cover image with fetchpriority=high if enabled
+                if (config.isEnableFetchPriorityHigh()) {
+                    sb.append(genPreloadLink(seoData));
+                }
+
                 model.add(modelFactory.createText(sb.toString()));
                 return Mono.<Void>empty();
             })
@@ -662,6 +667,15 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             }
             </script>
             """.formatted(breadcrumbList);
+    }
+
+    private String genPreloadLink(SeoData seoData) {
+        if (seoData.coverUrl() == null || seoData.coverUrl().isBlank()) {
+            return "";
+        }
+        return """
+            <link rel="preload" href="%s" as="image" fetchpriority="high"/>
+            """.formatted(seoData.coverUrl());
     }
 
     private record QuestionAnswer(String question, String answer) {}

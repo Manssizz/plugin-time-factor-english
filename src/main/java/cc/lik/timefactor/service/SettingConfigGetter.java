@@ -37,6 +37,7 @@ public interface SettingConfigGetter {
         private String imageQuality;
         private int maxImageWidth;
         private int maxImageHeight;
+        private boolean enableFetchPriorityHigh;
     }
 
     @Data

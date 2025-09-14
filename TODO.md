@@ -1,9 +1,9 @@
-# TODO: Add Breadcrumb Support in Advanced SEO
+# TODO: Add support for fetchpriority=high
 
-## Pending Tasks
-- [x] Add enableBreadcrumb checkbox to settings.yaml in advanced group
-- [x] Add enableBreadcrumb field to AdvancedConfig in SettingConfigGetter.java
-- [x] Modify generateSeoTags in TimeFactorProcess.java to get advanced config
-- [x] Add genBreadcrumbSchema method in TimeFactorProcess.java
-- [x] Call genBreadcrumbSchema conditionally in generateSeoTags
-- [ ] Test the breadcrumb schema output (user will build and test)
+## Steps to Complete
+
+- [x] Add new setting "Enable Fetch Priority High for Cover Images" to settings.yaml in advanced group
+- [x] Update BasicConfig class in SettingConfigGetter.java to include enableFetchPriorityHigh field
+- [x] Add genPreloadLink method to TimeFactorProcess.java
+- [x] Modify generateSeoTags in TimeFactorProcess.java to conditionally call genPreloadLink
+- [ ] Test the implementation to ensure preload link is added correctly

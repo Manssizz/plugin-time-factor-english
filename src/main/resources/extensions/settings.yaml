@@ -317,6 +317,13 @@ spec:
           id: defaultImage
           key: defaultImage
           help: "Used when no cover image is set"
+        - $formkit: checkbox
+          label: "Enable Fetch Priority High for Cover Images"
+          name: enableFetchPriorityHigh
+          id: enableFetchPriorityHigh
+          key: enableFetchPriorityHigh
+          value: false
+          help: "Enable fetchpriority='high' attribute for cover image preload links"
         - $formkit: combobox
           label: "Content Type Detection"
           name: contentTypeDetection
