@@ -2,89 +2,110 @@
   <div class="seo-dashboard">
     <h2>SEO Performance Dashboard</h2>
 
-    <div class="dashboard-grid">
-      <!-- Core Web Vitals -->
-      <div class="metric-card">
-        <h3>Core Web Vitals</h3>
-        <div class="metrics">
-          <div class="metric">
-            <span class="label">LCP</span>
-            <span class="value" :class="getScoreClass(coreWebVitals.lcp, 'lcp')">
-              {{ coreWebVitals.lcp ? coreWebVitals.lcp + 's' : 'N/A' }}
-            </span>
-          </div>
-          <div class="metric">
-            <span class="label">FID</span>
-            <span class="value" :class="getScoreClass(coreWebVitals.fid, 'fid')">
-              {{ coreWebVitals.fid ? coreWebVitals.fid + 'ms' : 'N/A' }}
-            </span>
-          </div>
-          <div class="metric">
-            <span class="label">CLS</span>
-            <span class="value" :class="getScoreClass(coreWebVitals.cls, 'cls')">
-              {{ coreWebVitals.cls || 'N/A' }}
-            </span>
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button
+        v-for="tab in tabs"
+        :key="tab.key"
+        :class="['tab-button', { active: activeTab === tab.key }]"
+        @click="activeTab = tab.key"
+      >
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Overview Tab -->
+      <div v-if="activeTab === 'overview'" class="dashboard-grid">
+        <div class="metric-card">
+          <h3>Overall Performance</h3>
+          <div class="metrics">
+            <div class="metric">
+              <span class="label">Page Speed Score</span>
+              <span class="value" :class="getScoreClass(seoMetrics.pageSpeedScore, 'score')">
+                {{ seoMetrics.pageSpeedScore }}/100
+              </span>
+            </div>
+            <div class="metric">
+              <span class="label">Mobile Friendly</span>
+              <span class="value" :class="getScoreClass(seoMetrics.mobileFriendlyScore, 'score')">
+                {{ seoMetrics.mobileFriendlyScore }}/100
+              </span>
+            </div>
+            <div class="metric">
+              <span class="label">Domain Authority</span>
+              <span class="value">{{ seoMetrics.domainAuthority }}/100</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- SEO Performance -->
-      <div class="metric-card">
-        <h3>SEO Performance</h3>
-        <div class="metrics">
-          <div class="metric">
-            <span class="label">Organic Traffic</span>
-            <span class="value">{{ formatNumber(seoMetrics.organicTraffic) }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Organic Keywords</span>
-            <span class="value">{{ formatNumber(seoMetrics.organicKeywords) }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Backlinks</span>
-            <span class="value">{{ formatNumber(seoMetrics.backlinks) }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Domain Authority</span>
-            <span class="value">{{ seoMetrics.domainAuthority }}/100</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Indexing Status -->
-      <div class="metric-card">
-        <h3>Indexing Status</h3>
-        <div class="metrics">
-          <div class="metric">
-            <span class="label">Indexed Pages</span>
-            <span class="value">{{ formatNumber(indexingStatus.indexed) }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Not Indexed</span>
-            <span class="value">{{ formatNumber(indexingStatus.notIndexed) }}</span>
-          </div>
-          <div class="metric">
-            <span class="label">Crawled (Not Indexed)</span>
-            <span class="value">{{ formatNumber(indexingStatus.crawledNotIndexed) }}</span>
+      <!-- Core Web Vitals Tab -->
+      <div v-if="activeTab === 'core-web-vitals'" class="dashboard-grid">
+        <div class="metric-card">
+          <h3>Core Web Vitals</h3>
+          <div class="metrics">
+            <div class="metric">
+              <span class="label">LCP (Largest Contentful Paint)</span>
+              <span class="value" :class="getScoreClass(coreWebVitals.lcp, 'lcp')">
+                {{ coreWebVitals.lcp ? coreWebVitals.lcp + 's' : 'N/A' }}
+              </span>
+            </div>
+            <div class="metric">
+              <span class="label">FID (First Input Delay)</span>
+              <span class="value" :class="getScoreClass(coreWebVitals.fid, 'fid')">
+                {{ coreWebVitals.fid ? coreWebVitals.fid + 'ms' : 'N/A' }}
+              </span>
+            </div>
+            <div class="metric">
+              <span class="label">CLS (Cumulative Layout Shift)</span>
+              <span class="value" :class="getScoreClass(coreWebVitals.cls, 'cls')">
+                {{ coreWebVitals.cls || 'N/A' }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Performance Scores -->
-      <div class="metric-card">
-        <h3>Performance Scores</h3>
-        <div class="metrics">
-          <div class="metric">
-            <span class="label">Page Speed</span>
-            <span class="value" :class="getScoreClass(seoMetrics.pageSpeedScore, 'score')">
-              {{ seoMetrics.pageSpeedScore }}/100
-            </span>
+      <!-- SEO Metrics Tab -->
+      <div v-if="activeTab === 'seo-metrics'" class="dashboard-grid">
+        <div class="metric-card">
+          <h3>SEO Performance</h3>
+          <div class="metrics">
+            <div class="metric">
+              <span class="label">Organic Traffic</span>
+              <span class="value">{{ formatNumber(seoMetrics.organicTraffic) }}</span>
+            </div>
+            <div class="metric">
+              <span class="label">Organic Keywords</span>
+              <span class="value">{{ formatNumber(seoMetrics.organicKeywords) }}</span>
+            </div>
+            <div class="metric">
+              <span class="label">Backlinks</span>
+              <span class="value">{{ formatNumber(seoMetrics.backlinks) }}</span>
+            </div>
           </div>
-          <div class="metric">
-            <span class="label">Mobile Friendly</span>
-            <span class="value" :class="getScoreClass(seoMetrics.mobileFriendlyScore, 'score')">
-              {{ seoMetrics.mobileFriendlyScore }}/100
-            </span>
+        </div>
+      </div>
+
+      <!-- Indexing Tab -->
+      <div v-if="activeTab === 'indexing'" class="dashboard-grid">
+        <div class="metric-card">
+          <h3>Indexing Status</h3>
+          <div class="metrics">
+            <div class="metric">
+              <span class="label">Indexed Pages</span>
+              <span class="value">{{ formatNumber(indexingStatus.indexed) }}</span>
+            </div>
+            <div class="metric">
+              <span class="label">Not Indexed</span>
+              <span class="value">{{ formatNumber(indexingStatus.notIndexed) }}</span>
+            </div>
+            <div class="metric">
+              <span class="label">Crawled (Not Indexed)</span>
+              <span class="value">{{ formatNumber(indexingStatus.crawledNotIndexed) }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -110,6 +131,13 @@ export default {
       seoMetrics: {},
       indexingStatus: {},
       loading: false,
+      activeTab: 'overview',
+      tabs: [
+        { key: 'overview', label: 'Overview' },
+        { key: 'core-web-vitals', label: 'Core Web Vitals' },
+        { key: 'seo-metrics', label: 'SEO Metrics' },
+        { key: 'indexing', label: 'Indexing' },
+      ],
     };
   },
   mounted() {
@@ -180,6 +208,36 @@ export default {
 <style scoped>
 .seo-dashboard {
   padding: 1em;
+}
+
+.tab-navigation {
+  display: flex;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  font-size: 1em;
+  color: #666;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button.active {
+  color: #1890ff;
+  border-bottom-color: #1890ff;
+  font-weight: bold;
+}
+
+.tab-button:hover:not(.active) {
+  color: #1890ff;
+}
+
+.tab-content {
+  min-height: 400px;
 }
 
 .dashboard-grid {

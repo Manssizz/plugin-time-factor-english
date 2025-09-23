@@ -19,6 +19,11 @@ spec:
   description: "An all-in-one SEO plugin that aggregates time factors and meta tags from mainstream platforms like Baidu, Google, ByteDance, etc!"
   settingName: plugin-seoToolkit-settings
   configMapName: plugin-seoToolkit-configMap
+  menus:
+    - name: seo-dashboard
+      parent: tools
+      label: "SEO Dashboard"
+      path: /admin/plugins/seo-toolkit/dashboard
   license:
     - name: "GPL-3.0"
       url: "https://github.com/Manssizz/plugin-time-factor-english/blob/main/LICENSE"
