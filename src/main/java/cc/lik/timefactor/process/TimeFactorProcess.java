@@ -174,7 +174,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
                     sb.append(genCanonicalTag(seoData.postUrl()));
                 }
                 if (config.isEnableTwitterCard()) {
-                    sb.append(genTwitterCard(seoData));
+                    sb.append(genTwitterCard(seoData, config));
                 }
                 if (config.isEnableMetaRobots()) {
                     sb.append(genMetaRobots(config.getRobotsIndex(), config.getRobotsFollow()));
@@ -372,7 +372,11 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             """.formatted(postUrl);
     }
 
-    private String genTwitterCard(SeoData seoData) {
+    private String genTwitterCard(SeoData seoData, SettingConfigGetter.BasicConfig config) {
+        var twitterUsername = Optional.ofNullable(config.getTwitterUsername())
+            .filter(username -> !username.trim().isEmpty())
+            .orElse(seoData.siteName());
+
         return """
             <meta name="twitter:card" content="summary_large_image"/>
             <meta name="twitter:title" content="%s"/>
@@ -382,7 +386,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
             <meta name="twitter:site" content="@%s"/>
             """.formatted(
                 seoData.title(), seoData.description(), seoData.coverUrl(),
-                seoData.postUrl(), seoData.siteName()
+                seoData.postUrl(), twitterUsername
             );
     }
 
@@ -556,6 +560,7 @@ public class TimeFactorProcess implements TemplateHeadProcessor {
         return """
             <meta property="og:site_name" content="%s"/>
             <meta property="og:locale" content="id_ID"/>
+            <meta property="og:locale:alternate" content="en_US" />
             <meta property="og:image:width" content="1200"/>
             <meta property="og:image:height" content="630"/>
             <meta property="og:image:alt" content="%s"/>

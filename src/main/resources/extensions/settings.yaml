@@ -112,6 +112,13 @@ spec:
           key: enableTwitterCard
           value: true
           help: "Add Twitter Card meta tags for better social media sharing"
+        - $formkit: text
+          label: "Twitter Username"
+          name: twitterUsername
+          id: twitterUsername
+          key: twitterUsername
+          placeholder: "@isiotakcom"
+          help: "Your Twitter username (without @ symbol) for Twitter Card attribution"
         - $formkit: checkbox
           label: "Enable Enhanced Social Media"
           name: enableEnhancedSocial

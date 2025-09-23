@@ -17,6 +17,7 @@ public interface SettingConfigGetter {
         private boolean enableStructuredData;
         private boolean enableCanonicalTag;
         private boolean enableTwitterCard;
+        private String twitterUsername;
         private boolean enableMetaRobots;
         private String robotsIndex;
         private String robotsFollow;
